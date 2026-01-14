@@ -3,6 +3,7 @@ import postgres from 'postgres';
 import * as schema from '../src/infra/database/schema';
 import { eq } from 'drizzle-orm';
 import 'dotenv/config';
+import * as bcrypt from 'bcrypt';
 
 async function main() {
     const databaseUrl = process.env.DATABASE_URL;
@@ -29,11 +30,15 @@ async function main() {
     // 2. Create Users (Professor & Student)
     console.log('Creating users...');
 
+    // Hash password '123456'
+    const passwordHash = await bcrypt.hash('123456', 10);
+
+
     // Professor
     await db.insert(schema.users).values({
         name: 'Carlos Professor',
         email: 'professor@blogaulas.com',
-        passwordHash: 'hashed_secret_password',
+        passwordHash,
         role: 'PROFESSOR',
     }).onConflictDoNothing();
 
@@ -45,7 +50,7 @@ async function main() {
     await db.insert(schema.users).values({
         name: 'João Aluno',
         email: 'aluno@blogaulas.com',
-        passwordHash: 'hashed_secret_password',
+        passwordHash,
         role: 'ALUNO',
     }).onConflictDoNothing();
 

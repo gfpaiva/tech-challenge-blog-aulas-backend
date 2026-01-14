@@ -28,5 +28,5 @@
   ```
 
 ## 4. Error Handling
-- Use NestJS HttpException or custom Domain Exceptions.
+- Always use custom Domain Exceptions on core layer, never use NestJS exceptions except on controllers or other NestJS layers.
 - Do not let Database Errors leak to the Controller. Catch them in Repository and throw Domain Errors.
