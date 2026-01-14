@@ -11,6 +11,9 @@ import { DrizzlePostRepository } from './infra/database/drizzle-post.repository'
 import { GetPostCommentsService } from './core/services/get-post-comments.service';
 import { ICommentRepository } from './core/ports/comment.repository.port';
 import { DrizzleCommentRepository } from './infra/database/drizzle-comment.repository';
+import { CreatePostService } from './core/services/create-post.service';
+import { ICategoryRepository } from './core/ports/category.repository.port';
+import { DrizzleCategoryRepository } from './infra/database/drizzle-category.repository';
 
 @Module({
   imports: [DatabaseModule, CacheModule],
@@ -18,10 +21,15 @@ import { DrizzleCommentRepository } from './infra/database/drizzle-comment.repos
   providers: [
     ListPostsService,
     GetPostService,
+    CreatePostService,
     GetPostCommentsService,
     {
       provide: IPostRepository,
       useClass: DrizzlePostRepository,
+    },
+    {
+      provide: ICategoryRepository,
+      useClass: DrizzleCategoryRepository,
     },
     {
       provide: ICommentRepository,

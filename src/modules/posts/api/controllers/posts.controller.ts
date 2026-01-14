@@ -1,21 +1,48 @@
-import { Controller, Get, Query, Param, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  UseGuards,
+  Body,
+} from '@nestjs/common';
 import { ListPostsService } from '@modules/posts/core/services/list-posts.service';
 import { GetPostService } from '@modules/posts/core/services/get-post.service';
+import { CreatePostService } from '@modules/posts/core/services/create-post.service';
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';
 import {
   ListPostsDto,
   PostResponseDto,
   PostDetailResponseDto,
   CommentDto,
+  CreatePostDto,
 } from '../dtos';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@common/decorators/current-user.decorator';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly listPostsService: ListPostsService,
     private readonly getPostService: GetPostService,
+    private readonly createPostService: CreatePostService,
     private readonly getCommentsService: GetPostCommentsService,
   ) {}
+
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async create(
+    @Body() dto: CreatePostDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<PostDetailResponseDto> {
+    const post = await this.createPostService.execute({
+      ...dto,
+      authorId: user.id,
+    });
+    return PostDetailResponseDto.fromDomain(post);
+  }
 
   @Get()
   async findAll(@Query() query: ListPostsDto): Promise<PostResponseDto> {

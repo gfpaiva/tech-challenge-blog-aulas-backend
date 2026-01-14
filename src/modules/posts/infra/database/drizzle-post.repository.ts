@@ -63,6 +63,7 @@ export class DrizzlePostRepository implements IPostRepository {
     };
   }
 
+
   async findById(id: string): Promise<Post | null> {
     const [result] = await this.db
       .select({
@@ -92,5 +93,23 @@ export class DrizzlePostRepository implements IPostRepository {
     }
 
     return PostMapper.toDomain(result);
+  }
+
+  async create(data: Post): Promise<Post> {
+    const [inserted] = await this.db
+      .insert(posts)
+      .values({
+        title: data.title,
+        content: data.content,
+        authorId: data.author.id,
+        categoryId: data.category.id,
+      })
+      .returning();
+
+    const created = await this.findById(inserted.id);
+    if (!created) {
+      throw new Error('Failed to create post');
+    }
+    return created;
   }
 }

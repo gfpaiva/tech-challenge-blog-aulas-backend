@@ -1,0 +1,45 @@
+meta {
+  name: Create Post
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{host}}/posts
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Titulo do Post Exemplo",
+    "content": "Conteúdo rico do post...",
+    "categoryId": 1
+  }
+}
+
+docs {
+  # Criar Novo Post
+  Cria um novo post no blog. Requer autenticação.
+  
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>`.
+  > **Dica:** Execute o request `Auth/Login` para obter e configurar automaticamente o token no ambiente.
+  
+  ### Payload (JSON)
+  - `title`: String (Max 100 caracteres) - **Obrigatório**
+  - `content`: String - **Obrigatório**
+  - `categoryId`: Number - **Obrigatório**
+  
+  ### Comportamento
+  - Valida se a categoria existe.
+  - Invalida o cache de listagem (`posts:list:*`).
+  - O autor é inferido automaticamente do token JWT (`CreateUser` decorator).
+  
+  ### Resposta
+  Retorna o objeto do post criado.
+}
