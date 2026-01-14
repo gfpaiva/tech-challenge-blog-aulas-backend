@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './infra/env/env.schema';
 import { DatabaseModule } from './infra/database/database.module';
-import { RedisModule } from './infra/cache/redis.module';
+import { CacheModule } from './infra/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { PostsModule } from './modules/posts/posts.module';
 
 @Module({
   imports: [
@@ -12,10 +13,11 @@ import { AuthModule } from './modules/auth/auth.module';
       isGlobal: true,
     }),
     DatabaseModule,
-    RedisModule,
+    CacheModule,
     AuthModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
