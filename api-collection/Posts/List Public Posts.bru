@@ -1,0 +1,31 @@
+meta {
+  name: List Public Posts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/posts
+  body: none
+  auth: none
+}
+
+query {
+  ~page: 1
+  ~limit: 10
+}
+
+docs {
+  # Listagem Pública de Posts
+  Retorna uma lista paginada de posts ordenada cronologicamente (mais recentes primeiro).
+  
+  ### Parâmetros
+  - `page`: Opcional (Default: 1)
+  - `limit`: Opcional (Default: 10)
+  
+  ### Cache
+  Este endpoint utiliza **Cache-Aside** com Redis (TTL: 1h).
+  
+  ### Resposta
+  Retorna um objeto contendo `data` (Array de posts) e `meta` (Informações de paginação).
+}
