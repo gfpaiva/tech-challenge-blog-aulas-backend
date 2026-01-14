@@ -63,7 +63,6 @@ export class DrizzlePostRepository implements IPostRepository {
     };
   }
 
-
   async findById(id: string): Promise<Post | null> {
     const [result] = await this.db
       .select({
