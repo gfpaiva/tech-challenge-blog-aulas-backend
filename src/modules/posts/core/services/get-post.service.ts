@@ -4,6 +4,8 @@ import { IPostRepository } from '../ports/post.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
 import { PostNotFoundError } from '../exceptions/post-not-found.error';
 
+import { PersistencePost, PostMapper } from '../../infra/mappers/post.mapper';
+
 @Injectable()
 export class GetPostService {
   private static TTL_SECONDS = 3600; // 1 hour
@@ -18,7 +20,8 @@ export class GetPostService {
 
     const cachedPost = await this.cache.get(cacheKey);
     if (cachedPost) {
-      return JSON.parse(cachedPost) as Post;
+      const rawPost = JSON.parse(cachedPost) as PersistencePost;
+      return PostMapper.toDomain(rawPost);
     }
 
     const post = await this.postRepository.findById(id);

@@ -5,8 +5,8 @@ export type PersistencePost = {
   id: string;
   title: string;
   content: string;
-  creationDate: Date;
-  updateDate: Date;
+  creationDate: Date | string;
+  updateDate: Date | string;
   author: {
     id: string | null;
     name: string | null;
@@ -34,8 +34,8 @@ export class PostMapper {
         id: raw.category?.id ?? 0,
         name: raw.category?.name ?? 'Uncategorized',
       },
-      raw.creationDate,
-      raw.updateDate,
+      new Date(raw.creationDate),
+      new Date(raw.updateDate),
     );
   }
 }

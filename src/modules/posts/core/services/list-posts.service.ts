@@ -5,6 +5,11 @@ import {
 } from '@modules/posts/core/ports/post.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
 
+import {
+  PersistencePost,
+  PostMapper,
+} from '@modules/posts/infra/mappers/post.mapper';
+
 @Injectable()
 export class ListPostsService {
   private static TTL_SECONDS = 3600; // 1 hour
@@ -23,7 +28,14 @@ export class ListPostsService {
 
     const cachedData = await this.cache.get(cacheKey);
     if (cachedData) {
-      return JSON.parse(cachedData) as PaginatedPostsResult;
+      const parsedData = JSON.parse(cachedData) as {
+        posts: PersistencePost[];
+        total: number;
+      };
+      return {
+        ...parsedData,
+        posts: parsedData.posts.map((post) => PostMapper.toDomain(post)),
+      };
     }
 
     const result = await this.postRepository.findAll({ page, limit });
