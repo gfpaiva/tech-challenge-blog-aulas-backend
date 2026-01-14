@@ -14,6 +14,8 @@
 - Use **Custom Decorators** for request context (e.g., `@CurrentUser()`).
 - Prioritize path aliases for imports (e.g., `@common/ports/cache.port`).
 - Avoid too many comments on code, keep code self-explanatory eliminating necessity for comments.
+- Avoid to use interface or object as method/function parameters when arguments are less than 2.
+- Prioritize every that a type is reusable create them in `src/common/types` and use it along the project.
 
 ## 3. Drizzle ORM Guidelines
 - Define schema in `src/infra/database/schema.ts`.
