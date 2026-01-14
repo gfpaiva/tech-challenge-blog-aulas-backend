@@ -12,6 +12,8 @@
 - Always explicit return types for functions.
 - Use `async/await` (avoid `.then()`).
 - Use **Custom Decorators** for request context (e.g., `@CurrentUser()`).
+- Prioritize path aliases for imports (e.g., `@common/ports/cache.port`).
+- Avoid too many comments on code, keep code self-explanatory eliminating necessity for comments.
 
 ## 3. Drizzle ORM Guidelines
 - Define schema in `src/infra/database/schema.ts`.

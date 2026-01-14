@@ -2,7 +2,7 @@
 
 ## Pattern: Vertical Slicing with Hexagonal Arch
 
-### 1. Directory Tree
+### 1. Directory Tree (example)
 ```text
 src/
 ├── app.module.ts
@@ -11,7 +11,7 @@ src/
 ├── config/                  # Envs & Configuration
 └── modules/
     ├── auth/                # Feature: Authentication
-    └── posting/             # Feature: Blog Posts (Example)
+    └── posts/             # Feature: Blog Posts (Example)
         ├── api/             # PRIMARY ADAPTERS (Entry points)
         │   ├── controllers/
         │   └── dtos/        # Input Validation (class-validator)
