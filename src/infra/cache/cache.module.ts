@@ -7,22 +7,22 @@ import { CACHE_CLIENT } from './cache.constants';
 
 @Global()
 @Module({
-    providers: [
-        {
-            provide: CACHE_CLIENT,
-            inject: [ConfigService],
-            useFactory: (config: ConfigService) => {
-                return new Redis({
-                    host: config.get('REDIS_HOST'),
-                    port: config.get('REDIS_PORT'),
-                });
-            },
-        },
-        {
-            provide: ICachePort,
-            useClass: RedisCacheAdapter,
-        },
-    ],
-    exports: [CACHE_CLIENT, ICachePort],
+  providers: [
+    {
+      provide: CACHE_CLIENT,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return new Redis({
+          host: config.get('REDIS_HOST'),
+          port: config.get('REDIS_PORT'),
+        });
+      },
+    },
+    {
+      provide: ICachePort,
+      useClass: RedisCacheAdapter,
+    },
+  ],
+  exports: [CACHE_CLIENT, ICachePort],
 })
-export class CacheModule { }
+export class CacheModule {}
