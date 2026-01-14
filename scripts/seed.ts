@@ -60,18 +60,22 @@ async function main() {
     // 3. Create Posts & Comments
     console.log('Creating posts and comments...');
 
-    for (const category of allCategories) {
-        // Check if post already exists to avoid duplicates if seed runs twice (simple check by title)
+    const postsToCreate = 20;
+
+    for (let i = 1; i <= postsToCreate; i++) {
+        const category = allCategories[i % allCategories.length];
+        const title = `Post de Exemplo #${i} - ${category.name}`;
+
         const existingPost = await db.query.posts.findFirst({
-            where: eq(schema.posts.title, `Introdução a ${category.name}`)
+            where: eq(schema.posts.title, title)
         });
 
         let postId = existingPost?.id;
 
         if (!existingPost) {
             const [post] = await db.insert(schema.posts).values({
-                title: `Introdução a ${category.name}`,
-                content: `Conteúdo introdutório sobre ${category.name}. Nesta aula vamos aprender os conceitos básicos.`,
+                title: title,
+                content: `Este é o conteúdo do post de exemplo número ${i}. Ele pertence à categoria ${category.name}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
                 authorId: professor.id,
                 categoryId: category.id,
             }).returning();
@@ -79,18 +83,20 @@ async function main() {
         }
 
         if (postId) {
-            // Create Comment
-            // Check duplicate comment
-            const existingComment = await db.query.comments.findFirst({
-                where: eq(schema.comments.postId, postId)
-            });
-
-            if (!existingComment) {
-                await db.insert(schema.comments).values({
-                    content: `Professor, tenho uma dúvida sobre ${category.name}!`,
-                    authorId: student.id,
-                    postId: postId,
+            // Create a couple of comments for some posts
+            if (i % 2 === 0) {
+                const commentContent = `Comentário interessante no post ${i}!`;
+                const existingComment = await db.query.comments.findFirst({
+                    where: eq(schema.comments.content, commentContent)
                 });
+
+                if (!existingComment) {
+                    await db.insert(schema.comments).values({
+                        content: commentContent,
+                        authorId: student.id,
+                        postId: postId,
+                    });
+                }
             }
         }
     }
