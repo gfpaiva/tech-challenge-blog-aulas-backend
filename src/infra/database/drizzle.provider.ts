@@ -12,6 +12,6 @@ export const drizzleProvider: FactoryProvider = {
   useFactory: (configService: ConfigService) => {
     const databaseUrl = configService.get<string>('DATABASE_URL')!;
     const client = postgres(databaseUrl);
-    return drizzle(client, { schema });
+    return drizzle(client, { schema, logger: process.env.NODE_ENV !== 'production' });
   },
 };
