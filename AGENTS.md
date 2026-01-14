@@ -28,3 +28,7 @@ For detailed instructions, read:
 
 ## 4. Version Control
 - Follow strict branching and commit rules defined in `docs/rules/git-workflow.md`.
+
+## 5. Commands & Tools
+- **Package Manager:** STRICTLY `pnpm`. See `docs/rules/commands.md` for example commands.
+- **Scripts:** Use `pnpm run <script>` as defined in `docs/rules/commands.md`.
