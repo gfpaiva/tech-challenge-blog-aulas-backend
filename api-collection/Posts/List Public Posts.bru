@@ -10,9 +10,16 @@ get {
   auth: none
 }
 
-query {
+params:query {
   ~page: 1
   ~limit: 10
+}
+
+script:post-response {
+  const data = res.getBody();
+  if (data && data.data && data.data.length > 0) {
+    bru.setVar("lastPostId", data.data[0].id);
+  }
 }
 
 docs {
