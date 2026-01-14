@@ -1,0 +1,35 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "professor@blogaulas.com",
+    "password": "123456"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.access_token);
+  }
+}
+
+docs {
+  # Login
+  Autentica um usuário e retorna um JWT Token.
+  
+  O script de pós-resposta captura automaticamente o `access_token` e atualiza a variável de ambiente `token`.
+  
+  ### Credenciais Padrão (Seed)
+  - **Professor**: professor@blogaulas.com / 123456
+  - **Aluno**: aluno@blogaulas.com / 123456
+}

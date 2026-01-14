@@ -23,6 +23,15 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    if (exception.constructor.name === 'InvalidCredentialsError') {
+      response.status(HttpStatus.UNAUTHORIZED).json({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        message: exception.message,
+        error: 'Unauthorized',
+      });
+      return;
+    }
+
     // Default handling for other DomainErrors (fallback to 500 or specific mapping if needed)
     // For now, let's treat unknown domain errors as internal server errors or just BadRequest if they imply validation failure (though validation usually goes via class-validator)
     // Adjusting to generic 500 for unhandled domain errors for safety, or rethrow.

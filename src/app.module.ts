@@ -5,6 +5,7 @@ import { DatabaseModule } from './infra/database/database.module';
 import { CacheModule } from './infra/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/posts.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PostsModule } from './modules/posts/posts.module';
     CacheModule,
     AuthModule,
     PostsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
