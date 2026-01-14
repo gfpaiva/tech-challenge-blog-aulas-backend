@@ -1,0 +1,31 @@
+meta {
+  name: Get Post Detail
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/posts/{{postId}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  postId: {{lastPostId}}
+}
+
+docs {
+  # Detalhe do Post
+  Retorna o conteúdo completo de um post específico, incluindo dados do autor e categoria.
+  
+  ### Parâmetros
+  - `id`: UUID do post (Path Parameter)
+  
+  ### Cache
+  Este endpoint utiliza **Cache-Aside** com Redis (TTL: 1h). Chave: `post:detail:${id}`.
+  
+  ### Performance & Arquitetura
+  - **Fail Fast:** O ID é validado como UUID via `ParseUUIDPipe` antes de processar.
+  - **Segurança:** Dados sensíveis do autor (como hash de senha) nunca são enviados.
+  - **Slicing:** Este endpoint **NÃO** retorna comentários. Para ler comentários, utilize `GET /posts/:id/comments`.
+}

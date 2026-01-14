@@ -1,0 +1,27 @@
+meta {
+  name: Get Post Comments
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/posts/{{postId}}/comments
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  postId: {{lastPostId}}
+}
+
+docs {
+  # Listagem de Comentários do Post
+  Retorna uma lista de todos os comentários de um post específico.
+  
+  ### Parâmetros
+  - `id`: UUID do post (Path Parameter).
+  
+  ### Fluxo
+  1. Verifica se o post existe (Retorna 404 se não existir).
+  2. Retorna todos os comentários do post ordenados por data (mais recentes primeiro).
+}
