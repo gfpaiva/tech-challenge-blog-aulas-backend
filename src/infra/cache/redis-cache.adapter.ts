@@ -22,4 +22,11 @@ export class RedisCacheAdapter implements ICachePort {
   async del(key: string): Promise<void> {
     await this.redis.del(key);
   }
+
+  async delMatch(pattern: string): Promise<void> {
+    const keys = await this.redis.keys(pattern);
+    if (keys.length > 0) {
+      await this.redis.del(...keys);
+    }
+  }
 }
