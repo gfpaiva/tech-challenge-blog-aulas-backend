@@ -12,7 +12,7 @@ export class ListPostsService {
   constructor(
     private readonly postRepository: IPostRepository,
     private readonly cache: ICachePort,
-  ) { }
+  ) {}
 
   async execute(params: {
     page: number;

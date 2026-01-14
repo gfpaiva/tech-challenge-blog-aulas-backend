@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, ParseUUIDPipe, Injectable, Logger } from '@nestjs/common';
+import { Controller, Get, Query, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ListPostsService } from '@modules/posts/core/services/list-posts.service';
 import { GetPostService } from '@modules/posts/core/services/get-post.service';
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';

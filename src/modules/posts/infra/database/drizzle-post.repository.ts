@@ -18,7 +18,7 @@ export class DrizzlePostRepository implements IPostRepository {
     private readonly db: NodePgDatabase<
       typeof import('@infra/database/schema')
     >,
-  ) { }
+  ) {}
 
   async findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult> {
     const { page, limit } = params;

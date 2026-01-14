@@ -14,7 +14,7 @@ export class DrizzleCommentRepository implements ICommentRepository {
     private readonly db: NodePgDatabase<
       typeof import('@infra/database/schema')
     >,
-  ) { }
+  ) {}
 
   async findByPostId(postId: string): Promise<Comment[]> {
     const results = await this.db
