@@ -52,8 +52,10 @@ export class UpdatePostService {
             updateDate: new Date(),
         });
 
-        await this.cache.del(`post:detail:${id}`);
-        await this.cache.delMatch('posts:list:*');
+        await Promise.all([
+            this.cache.del(`post:detail:${id}`),
+            this.cache.delMatch('posts:list:*'),
+        ]);
 
         return updatedPost;
     }
