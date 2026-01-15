@@ -6,82 +6,82 @@ import { InvalidCredentialsError } from '../exceptions/invalid-credentials.error
 import { UserRole } from '@common/types';
 
 describe('AuthService', () => {
-    let service: AuthService;
-    let userRepository: jest.Mocked<IUserRepository>;
-    let passwordService: jest.Mocked<IPasswordService>;
-    let jwtService: jest.Mocked<JwtService>;
+  let service: AuthService;
+  let userRepository: jest.Mocked<IUserRepository>;
+  let passwordService: jest.Mocked<IPasswordService>;
+  let jwtService: jest.Mocked<JwtService>;
 
-    beforeEach(() => {
-        userRepository = {
-            findByEmail: jest.fn(),
-            findById: jest.fn(),
-        } as any;
+  beforeEach(() => {
+    userRepository = {
+      findByEmail: jest.fn(),
+      findById: jest.fn(),
+    } as any;
 
-        passwordService = {
-            compare: jest.fn(),
-            hash: jest.fn(),
-        } as any;
+    passwordService = {
+      compare: jest.fn(),
+      hash: jest.fn(),
+    } as any;
 
-        jwtService = {
-            sign: jest.fn(),
-        } as any;
+    jwtService = {
+      sign: jest.fn(),
+    } as any;
 
-        service = new AuthService(userRepository, passwordService, jwtService);
+    service = new AuthService(userRepository, passwordService, jwtService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  describe('login', () => {
+    const loginDto = {
+      email: 'test@example.com',
+      password: 'password123',
+    };
+
+    const mockUser = {
+      id: 'user-1',
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'ALUNO' as UserRole,
+      passwordHash: 'hashed-password',
+    };
+
+    it('should throw InvalidCredentialsError if user is not found', async () => {
+      userRepository.findByEmail.mockResolvedValue(null);
+
+      await expect(service.login(loginDto)).rejects.toThrow(
+        InvalidCredentialsError,
+      );
+      expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
+    it('should throw InvalidCredentialsError if password is invalid', async () => {
+      userRepository.findByEmail.mockResolvedValue(mockUser);
+      passwordService.compare.mockResolvedValue(false);
+
+      await expect(service.login(loginDto)).rejects.toThrow(
+        InvalidCredentialsError,
+      );
+      expect(passwordService.compare).toHaveBeenCalledWith(
+        loginDto.password,
+        mockUser.passwordHash,
+      );
     });
 
-    describe('login', () => {
-        const loginDto = {
-            email: 'test@example.com',
-            password: 'password123',
-        };
+    it('should return an access token if credentials are valid', async () => {
+      userRepository.findByEmail.mockResolvedValue(mockUser);
+      passwordService.compare.mockResolvedValue(true);
+      jwtService.sign.mockReturnValue('mock-jwt-token');
 
-        const mockUser = {
-            id: 'user-1',
-            name: 'Test User',
-            email: 'test@example.com',
-            role: 'ALUNO' as UserRole,
-            passwordHash: 'hashed-password',
-        };
+      const result = await service.login(loginDto);
 
-        it('should throw InvalidCredentialsError if user is not found', async () => {
-            userRepository.findByEmail.mockResolvedValue(null);
-
-            await expect(service.login(loginDto)).rejects.toThrow(
-                InvalidCredentialsError,
-            );
-            expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
-        });
-
-        it('should throw InvalidCredentialsError if password is invalid', async () => {
-            userRepository.findByEmail.mockResolvedValue(mockUser);
-            passwordService.compare.mockResolvedValue(false);
-
-            await expect(service.login(loginDto)).rejects.toThrow(
-                InvalidCredentialsError,
-            );
-            expect(passwordService.compare).toHaveBeenCalledWith(
-                loginDto.password,
-                mockUser.passwordHash,
-            );
-        });
-
-        it('should return an access token if credentials are valid', async () => {
-            userRepository.findByEmail.mockResolvedValue(mockUser);
-            passwordService.compare.mockResolvedValue(true);
-            jwtService.sign.mockReturnValue('mock-jwt-token');
-
-            const result = await service.login(loginDto);
-
-            expect(result).toEqual({ access_token: 'mock-jwt-token' });
-            expect(jwtService.sign).toHaveBeenCalledWith({
-                sub: mockUser.id,
-                id: mockUser.id,
-                role: mockUser.role,
-            });
-        });
+      expect(result).toEqual({ access_token: 'mock-jwt-token' });
+      expect(jwtService.sign).toHaveBeenCalledWith({
+        sub: mockUser.id,
+        id: mockUser.id,
+        role: mockUser.role,
+      });
     });
+  });
 });
