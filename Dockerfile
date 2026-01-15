@@ -33,18 +33,21 @@ RUN npm install -g pnpm
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV JWT_EXPIRATION=1d
+ENV NEW_RELIC_APP_NAME=tech-challenge-blog-aulas-backend
 
 # Define Build Arguments for sensitive variables
 ARG DATABASE_URL
 ARG REDIS_HOST
 ARG REDIS_PORT
 ARG JWT_SECRET
+ARG NEW_RELIC_LICENSE_KEY
 
 # Set Environment Variables from Build Arguments
 ENV DATABASE_URL=$DATABASE_URL
 ENV REDIS_HOST=$REDIS_HOST
 ENV REDIS_PORT=$REDIS_PORT
 ENV JWT_SECRET=$JWT_SECRET
+ENV NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY
 
 # Copy built application and production dependencies from builder
 COPY --from=builder /app/dist ./dist
