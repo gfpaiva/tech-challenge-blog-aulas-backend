@@ -53,9 +53,12 @@ ENV NEW_RELIC_LICENSE_KEY=$NEW_RELIC_LICENSE_KEY
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/drizzle ./drizzle
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/src/infra/database/schema.ts ./src/infra/database/schema.ts
 
 # Expose the application port
 EXPOSE 3000
 
 # Start the application
-CMD ["pnpm", "run", "start:prod"]
+CMD ["sh", "-c", "pnpm run db:migrate && pnpm run start:prod"]
