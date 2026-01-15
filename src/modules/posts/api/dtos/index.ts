@@ -3,3 +3,4 @@ export * from './post-response.dto';
 export * from './list-posts.dto';
 export * from './comment-response.dto';
 export * from './create-post.dto';
+export * from './update-post.dto';

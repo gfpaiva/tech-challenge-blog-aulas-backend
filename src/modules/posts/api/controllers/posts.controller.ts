@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Put,
   Query,
   Param,
   ParseUUIDPipe,
@@ -11,6 +12,7 @@ import {
 import { ListPostsService } from '@modules/posts/core/services/list-posts.service';
 import { GetPostService } from '@modules/posts/core/services/get-post.service';
 import { CreatePostService } from '@modules/posts/core/services/create-post.service';
+import { UpdatePostService } from '@modules/posts/core/services/update-post.service';
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';
 import {
   ListPostsDto,
@@ -18,6 +20,7 @@ import {
   PostDetailResponseDto,
   CommentDto,
   CreatePostDto,
+  UpdatePostDto,
 } from '../dtos';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
@@ -28,8 +31,9 @@ export class PostsController {
     private readonly listPostsService: ListPostsService,
     private readonly getPostService: GetPostService,
     private readonly createPostService: CreatePostService,
+    private readonly updatePostService: UpdatePostService,
     private readonly getCommentsService: GetPostCommentsService,
-  ) {}
+  ) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -39,6 +43,21 @@ export class PostsController {
   ): Promise<PostDetailResponseDto> {
     const post = await this.createPostService.execute({
       ...dto,
+      authorId: user.id,
+    });
+    return PostDetailResponseDto.fromDomain(post);
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdatePostDto,
+    @CurrentUser() user: { id: string },
+  ): Promise<PostDetailResponseDto> {
+    const post = await this.updatePostService.execute({
+      ...dto,
+      id,
       authorId: user.id,
     });
     return PostDetailResponseDto.fromDomain(post);
