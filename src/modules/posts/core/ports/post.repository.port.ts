@@ -12,6 +12,7 @@ export interface PaginatedPostsResult {
 
 export abstract class IPostRepository {
   abstract findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult>;
+  abstract search(term: string): Promise<Post[]>;
   abstract findById(id: string): Promise<Post | null>;
   abstract update(id: string, data: Partial<Post>): Promise<Post>;
   abstract delete(id: string): Promise<void>;

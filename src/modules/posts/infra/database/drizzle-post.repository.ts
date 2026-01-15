@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { desc, sql, eq } from 'drizzle-orm';
+import { desc, sql, eq, ilike, or } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { posts, users, categories } from '@infra/database/schema';
 import { DRIZZLE } from '@infra/database/drizzle.provider';
@@ -18,7 +18,7 @@ export class DrizzlePostRepository implements IPostRepository {
     private readonly db: NodePgDatabase<
       typeof import('@infra/database/schema')
     >,
-  ) { }
+  ) {}
 
   async findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult> {
     const { page, limit } = params;
@@ -61,6 +61,35 @@ export class DrizzlePostRepository implements IPostRepository {
       posts: mappedPosts,
       total: totalCount,
     };
+  }
+
+  async search(term: string): Promise<Post[]> {
+    const results = await this.db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        content: posts.content,
+        creationDate: posts.creationDate,
+        updateDate: posts.updateDate,
+        author: {
+          id: users.id,
+          name: users.name,
+          role: users.role,
+        },
+        category: {
+          id: categories.id,
+          name: categories.name,
+        },
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
+      .leftJoin(categories, eq(posts.categoryId, categories.id))
+      .where(
+        or(ilike(posts.title, `%${term}%`), ilike(posts.content, `%${term}%`)),
+      )
+      .limit(50); // Safety limit
+
+    return results.map((result) => PostMapper.toDomain(result));
   }
 
   async findById(id: string): Promise<Post | null> {
