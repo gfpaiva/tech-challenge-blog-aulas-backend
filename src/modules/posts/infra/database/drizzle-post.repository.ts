@@ -18,7 +18,7 @@ export class DrizzlePostRepository implements IPostRepository {
     private readonly db: NodePgDatabase<
       typeof import('@infra/database/schema')
     >,
-  ) {}
+  ) { }
 
   async findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult> {
     const { page, limit } = params;
@@ -92,6 +92,24 @@ export class DrizzlePostRepository implements IPostRepository {
     }
 
     return PostMapper.toDomain(result);
+  }
+
+  async update(id: string, data: Partial<Post>): Promise<Post> {
+    const updateValues: Record<string, any> = {
+      updateDate: new Date(),
+    };
+
+    if (data.title) updateValues.title = data.title;
+    if (data.content) updateValues.content = data.content;
+    if (data.category?.id) updateValues.categoryId = data.category.id;
+
+    await this.db.update(posts).set(updateValues).where(eq(posts.id, id));
+
+    const updated = await this.findById(id);
+    if (!updated) {
+      throw new Error('Failed to update post');
+    }
+    return updated;
   }
 
   async create(data: Post): Promise<Post> {
