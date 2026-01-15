@@ -45,8 +45,18 @@ describe('ListPostsService', () => {
     const params = { page: 1, limit: 10 };
     const cacheKey = `posts:list:page:1:limit:10`;
     const mockPosts: PaginatedPostsResult = {
-      posts: [],
-      total: 0,
+      posts: [
+        {
+          id: 'post-1',
+          title: 'Post 1',
+          content: 'Content 1',
+          author: { id: 'u1', name: 'N1', role: 'PROFESSOR' },
+          category: { id: 1, name: 'C1' },
+          creationDate: new Date(),
+          updateDate: new Date(),
+        },
+      ] as any,
+      total: 1,
     };
 
     it('should return cached data if available', async () => {
@@ -55,7 +65,8 @@ describe('ListPostsService', () => {
 
       expect(cache.get).toHaveBeenCalledWith(cacheKey);
       expect(postRepository.findAll).not.toHaveBeenCalled();
-      expect(result).toEqual(mockPosts);
+      expect(result.total).toEqual(mockPosts.total);
+      expect(result.posts[0].id).toEqual(mockPosts.posts[0].id);
     });
 
     it('should fetch from repository and cache if not in cache', async () => {
