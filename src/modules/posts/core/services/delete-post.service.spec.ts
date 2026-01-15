@@ -7,82 +7,82 @@ import { ForbiddenActionException } from '../exceptions/forbidden-action.excepti
 import { Post } from '../entities/post.entity';
 
 describe('DeletePostService', () => {
-    let service: DeletePostService;
-    let postRepository: IPostRepository;
-    let cache: ICachePort;
+  let service: DeletePostService;
+  let postRepository: IPostRepository;
+  let cache: ICachePort;
 
-    const mockPostRepository = {
-        findById: jest.fn(),
-        delete: jest.fn(),
-    };
+  const mockPostRepository = {
+    findById: jest.fn(),
+    delete: jest.fn(),
+  };
 
-    const mockCacheService = {
-        del: jest.fn(),
-        delMatch: jest.fn(),
-    };
+  const mockCacheService = {
+    del: jest.fn(),
+    delMatch: jest.fn(),
+  };
 
-    const mockPost: Post = {
-        id: 'post-id',
-        title: 'Test Post',
-        content: 'Content',
-        author: { id: 'author-id', name: 'Author', role: 'PROFESSOR' },
-        category: { id: 1, name: 'Category' },
-        creationDate: new Date(),
-        updateDate: new Date(),
-    };
+  const mockPost: Post = {
+    id: 'post-id',
+    title: 'Test Post',
+    content: 'Content',
+    author: { id: 'author-id', name: 'Author', role: 'PROFESSOR' },
+    category: { id: 1, name: 'Category' },
+    creationDate: new Date(),
+    updateDate: new Date(),
+  };
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                DeletePostService,
-                { provide: IPostRepository, useValue: mockPostRepository },
-                { provide: ICachePort, useValue: mockCacheService },
-            ],
-        }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        DeletePostService,
+        { provide: IPostRepository, useValue: mockPostRepository },
+        { provide: ICachePort, useValue: mockCacheService },
+      ],
+    }).compile();
 
-        service = module.get<DeletePostService>(DeletePostService);
-        postRepository = module.get<IPostRepository>(IPostRepository);
-        cache = module.get<ICachePort>(ICachePort);
+    service = module.get<DeletePostService>(DeletePostService);
+    postRepository = module.get<IPostRepository>(IPostRepository);
+    cache = module.get<ICachePort>(ICachePort);
 
-        jest.clearAllMocks();
-    });
+    jest.clearAllMocks();
+  });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-    it('should delete post successfully when user is author', async () => {
-        mockPostRepository.findById.mockResolvedValue(mockPost);
-        mockPostRepository.delete.mockResolvedValue(undefined);
+  it('should delete post successfully when user is author', async () => {
+    mockPostRepository.findById.mockResolvedValue(mockPost);
+    mockPostRepository.delete.mockResolvedValue(undefined);
 
-        await service.execute('post-id', 'author-id');
+    await service.execute('post-id', 'author-id');
 
-        expect(postRepository.findById).toHaveBeenCalledWith('post-id');
-        expect(postRepository.delete).toHaveBeenCalledWith('post-id');
-        expect(cache.del).toHaveBeenCalledWith('post:detail:post-id');
-        expect(cache.delMatch).toHaveBeenCalledWith('posts:list:*');
-    });
+    expect(postRepository.findById).toHaveBeenCalledWith('post-id');
+    expect(postRepository.delete).toHaveBeenCalledWith('post-id');
+    expect(cache.del).toHaveBeenCalledWith('post:detail:post-id');
+    expect(cache.delMatch).toHaveBeenCalledWith('posts:list:*');
+  });
 
-    it('should throw PostNotFoundError if post does not exist', async () => {
-        mockPostRepository.findById.mockResolvedValue(null);
+  it('should throw PostNotFoundError if post does not exist', async () => {
+    mockPostRepository.findById.mockResolvedValue(null);
 
-        await expect(service.execute('post-id', 'author-id')).rejects.toThrow(
-            new PostNotFoundError('post-id'),
-        );
+    await expect(service.execute('post-id', 'author-id')).rejects.toThrow(
+      new PostNotFoundError('post-id'),
+    );
 
-        expect(postRepository.findById).toHaveBeenCalledWith('post-id');
-        expect(postRepository.delete).not.toHaveBeenCalled();
-        expect(cache.del).not.toHaveBeenCalled();
-    });
+    expect(postRepository.findById).toHaveBeenCalledWith('post-id');
+    expect(postRepository.delete).not.toHaveBeenCalled();
+    expect(cache.del).not.toHaveBeenCalled();
+  });
 
-    it('should throw ForbiddenActionException if user is not author', async () => {
-        mockPostRepository.findById.mockResolvedValue(mockPost);
+  it('should throw ForbiddenActionException if user is not author', async () => {
+    mockPostRepository.findById.mockResolvedValue(mockPost);
 
-        await expect(service.execute('post-id', 'other-user')).rejects.toThrow(
-            ForbiddenActionException,
-        );
+    await expect(service.execute('post-id', 'other-user')).rejects.toThrow(
+      ForbiddenActionException,
+    );
 
-        expect(postRepository.findById).toHaveBeenCalledWith('post-id');
-        expect(postRepository.delete).not.toHaveBeenCalled();
-    });
+    expect(postRepository.findById).toHaveBeenCalledWith('post-id');
+    expect(postRepository.delete).not.toHaveBeenCalled();
+  });
 });

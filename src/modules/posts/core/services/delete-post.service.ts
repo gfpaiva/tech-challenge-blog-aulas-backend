@@ -6,27 +6,27 @@ import { ForbiddenActionException } from '../exceptions/forbidden-action.excepti
 
 @Injectable()
 export class DeletePostService {
-    constructor(
-        private readonly postRepository: IPostRepository,
-        private readonly cache: ICachePort,
-    ) { }
+  constructor(
+    private readonly postRepository: IPostRepository,
+    private readonly cache: ICachePort,
+  ) {}
 
-    async execute(postId: string, userId: string): Promise<void> {
-        const post = await this.postRepository.findById(postId);
+  async execute(postId: string, userId: string): Promise<void> {
+    const post = await this.postRepository.findById(postId);
 
-        if (!post) {
-            throw new PostNotFoundError(postId);
-        }
-
-        if (post.author.id !== userId) {
-            throw new ForbiddenActionException('You can only delete your own posts');
-        }
-
-        await this.postRepository.delete(postId);
-
-        await Promise.all([
-            this.cache.del(`post:detail:${postId}`),
-            this.cache.delMatch('posts:list:*'),
-        ]);
+    if (!post) {
+      throw new PostNotFoundError(postId);
     }
+
+    if (post.author.id !== userId) {
+      throw new ForbiddenActionException('You can only delete your own posts');
+    }
+
+    await this.postRepository.delete(postId);
+
+    await Promise.all([
+      this.cache.del(`post:detail:${postId}`),
+      this.cache.delMatch('posts:list:*'),
+    ]);
+  }
 }
