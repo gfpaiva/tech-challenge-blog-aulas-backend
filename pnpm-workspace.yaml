@@ -1,5 +1,8 @@
 onlyBuiltDependencies:
   - '@nestjs/core'
+  - '@newrelic/fn-inspect'
+  - '@newrelic/native-metrics'
   - bcrypt
   - esbuild
+  - protobufjs
   - unrs-resolver
