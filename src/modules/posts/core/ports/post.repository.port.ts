@@ -14,5 +14,6 @@ export abstract class IPostRepository {
   abstract findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult>;
   abstract findById(id: string): Promise<Post | null>;
   abstract update(id: string, data: Partial<Post>): Promise<Post>;
+  abstract delete(id: string): Promise<void>;
   abstract create(data: Post): Promise<Post>;
 }

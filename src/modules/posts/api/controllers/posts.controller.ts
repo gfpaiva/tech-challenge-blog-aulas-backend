@@ -8,12 +8,16 @@ import {
   Post,
   UseGuards,
   Body,
+  Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ListPostsService } from '@modules/posts/core/services/list-posts.service';
 import { GetPostService } from '@modules/posts/core/services/get-post.service';
 import { CreatePostService } from '@modules/posts/core/services/create-post.service';
 import { UpdatePostService } from '@modules/posts/core/services/update-post.service';
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';
+import { DeletePostService } from '@modules/posts/core/services/delete-post.service';
 import {
   ListPostsDto,
   PostResponseDto,
@@ -33,6 +37,7 @@ export class PostsController {
     private readonly createPostService: CreatePostService,
     private readonly updatePostService: UpdatePostService,
     private readonly getCommentsService: GetPostCommentsService,
+    private readonly deletePostService: DeletePostService,
   ) { }
 
   @Post()
@@ -61,6 +66,16 @@ export class PostsController {
       authorId: user.id,
     });
     return PostDetailResponseDto.fromDomain(post);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: { id: string },
+  ): Promise<void> {
+    await this.deletePostService.execute(id, user.id);
   }
 
   @Get()
