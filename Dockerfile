@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm run build
 
 # Remove development dependencies
-RUN pnpm prune --prod
+# RUN CI=true pnpm prune --prod
 
 # Production stage
 FROM node:24-alpine AS production
