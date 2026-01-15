@@ -18,6 +18,7 @@ import { CreatePostService } from '@modules/posts/core/services/create-post.serv
 import { UpdatePostService } from '@modules/posts/core/services/update-post.service';
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';
 import { DeletePostService } from '@modules/posts/core/services/delete-post.service';
+import { SearchPostsService } from '@modules/posts/core/services/search-posts.service';
 import {
   ListPostsDto,
   PostResponseDto,
@@ -25,6 +26,7 @@ import {
   CommentDto,
   CreatePostDto,
   UpdatePostDto,
+  SearchPostDto,
 } from '../dtos';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
@@ -38,7 +40,8 @@ export class PostsController {
     private readonly updatePostService: UpdatePostService,
     private readonly getCommentsService: GetPostCommentsService,
     private readonly deletePostService: DeletePostService,
-  ) { }
+    private readonly searchPostsService: SearchPostsService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -84,6 +87,13 @@ export class PostsController {
     const result = await this.listPostsService.execute({ page, limit });
 
     return PostResponseDto.fromDomain(result.posts, result.total, page, limit);
+  }
+
+  @Get('search')
+  async search(@Query() query: SearchPostDto): Promise<PostResponseDto> {
+    const { q } = query;
+    const posts = await this.searchPostsService.execute(q);
+    return PostResponseDto.fromDomain(posts, posts.length, 1, 50);
   }
 
   @Get(':id')

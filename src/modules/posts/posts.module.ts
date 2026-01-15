@@ -14,6 +14,7 @@ import { DrizzleCommentRepository } from './infra/database/drizzle-comment.repos
 import { CreatePostService } from './core/services/create-post.service';
 import { UpdatePostService } from './core/services/update-post.service';
 import { DeletePostService } from './core/services/delete-post.service';
+import { SearchPostsService } from './core/services/search-posts.service';
 import { ICategoryRepository } from './core/ports/category.repository.port';
 import { DrizzleCategoryRepository } from './infra/database/drizzle-category.repository';
 
@@ -28,6 +29,7 @@ import { DrizzleCategoryRepository } from './infra/database/drizzle-category.rep
     GetPostCommentsService,
     UpdatePostService,
     DeletePostService,
+    SearchPostsService,
     {
       provide: IPostRepository,
       useClass: DrizzlePostRepository,
@@ -42,4 +44,4 @@ import { DrizzleCategoryRepository } from './infra/database/drizzle-category.rep
     },
   ],
 })
-export class PostsModule { }
+export class PostsModule {}
