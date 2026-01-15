@@ -1,0 +1,64 @@
+meta {
+  name: Update Post
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{host}}/posts/{{postId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  postId: {{lastPostId}}
+}
+
+body:json {
+  {
+    "title": "Titulo Atualizado (via Bruno)",
+    "content": "Conteúdo atualizado e ainda mais rico...",
+    "categoryId": 1
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+      const data = res.getBody();
+      if (data && data.id) {
+          bru.setVar("lastPostId", data.id);
+      }
+  }
+}
+
+docs {
+  # Editar Postagem
+  Permite que o autor edite sua própria postagem.
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>`. O usuário autenticado DEVE ser o autor da postagem.
+
+  ### Parâmetros
+  - `id`: UUID da postagem a ser editada (Path Parameter).
+
+  ### Payload (JSON) - Opcionais
+  Envie apenas os campos que deseja atualizar (Partial Update):
+  - `title`: String (Max 100 caracteres)
+  - `content`: String
+  - `categoryId`: Number (Deve ser um ID de categoria válido)
+
+  ### Comportamento
+  - **Validação de Propriedade**: Verifica se o usuário atual é o autor. Retorna `403 Forbidden` caso contrário.
+  - **Integridade**: Valida se a categoria existe, caso `categoryId` seja informado. Retorna `404 Not Found` se categoria inválida.
+  - **Cache**: Invalida automaticamente o cache de detalhes deste post (`post:detail:{id}`) e a lista de posts (`posts:list:*`).
+
+  ### Possíveis Erros
+  - `400 Bad Request`: Payload inválido.
+  - `401 Unauthorized`: Token ausente ou inválido.
+  - `403 Forbidden`: Usuário tenta editar post de outro autor.
+  - `404 Not Found`: Post ou Categoria não encontrados.
+}

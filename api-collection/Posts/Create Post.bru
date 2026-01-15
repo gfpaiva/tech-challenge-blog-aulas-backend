@@ -22,6 +22,15 @@ body:json {
   }
 }
 
+script:post-response {
+  if (res.getStatus() === 201) {
+    const data = res.getBody();
+    if (data && data.id) {
+      bru.setVar("lastPostId", data.id);
+    }
+  }
+}
+
 docs {
   # Criar Novo Post
   Cria um novo post no blog. Requer autenticação.
