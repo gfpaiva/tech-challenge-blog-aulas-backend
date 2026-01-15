@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.0.0...v1.1.0) (2026-01-15)
+
+
+### Features
+
+* add run migration ([0f3335a](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/0f3335ae7b14df18fe53d00473abbea509f7a1ba))
+* add run migration ([2d7d2b2](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/2d7d2b2b63024689590d1fd53872f9164373d214))
+
 ## 1.0.0 (2026-01-15)
 
 
