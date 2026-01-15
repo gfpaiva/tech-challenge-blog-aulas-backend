@@ -1,0 +1,31 @@
+meta {
+  name: Search Posts
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{host}}/posts/search?q=teste
+  body: none
+  auth: none
+}
+
+params:query {
+  q: teste
+}
+
+docs {
+  # Buscar Posts
+  Busca posts contendo o termo especificado no título ou conteúdo.
+  
+  ### Parâmetros
+  - `q` (Query Param): Termo de busca (mínimo 3 caracteres).
+
+  ### Comportamento
+  - **Case-insensitive**: Busca sem diferenciar maiúsculas/minúsculas.
+  - **Limite**: Retorna no máximo 50 resultados.
+  - **Público**: Não requer autenticação.
+  
+  ### Possíveis Erros
+  - `400 Bad Request`: Termo menor que 3 caracteres.
+}
