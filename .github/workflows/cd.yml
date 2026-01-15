@@ -44,18 +44,24 @@ jobs:
       - name: Build and Push Docker Image
         env:
           IMAGE_TAG: ${{ needs.release-please.outputs.tag_name || 'latest' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
         run: |
           docker build \
-            --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
-            --build-arg REDIS_HOST=${{ secrets.REDIS_HOST }} \
-            --build-arg REDIS_PORT=${{ secrets.REDIS_PORT }} \
-            --build-arg JWT_SECRET=${{ secrets.JWT_SECRET }} \
-            --build-arg NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }} \
-            -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/tech-challenge-blog-aulas-backend:${IMAGE_TAG} \
-            -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/tech-challenge-blog-aulas-backend:latest \
+            --build-arg DATABASE_URL="$DATABASE_URL" \
+            --build-arg REDIS_HOST="$REDIS_HOST" \
+            --build-arg REDIS_PORT="$REDIS_PORT" \
+            --build-arg JWT_SECRET="$JWT_SECRET" \
+            --build-arg NEW_RELIC_LICENSE_KEY="$NEW_RELIC_LICENSE_KEY" \
+            -t "$REGISTRY_LOGIN_SERVER/tech-challenge-blog-aulas-backend:$IMAGE_TAG" \
+            -t "$REGISTRY_LOGIN_SERVER/tech-challenge-blog-aulas-backend:latest" \
             .
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/tech-challenge-blog-aulas-backend:${IMAGE_TAG}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/tech-challenge-blog-aulas-backend:latest
+          docker push "$REGISTRY_LOGIN_SERVER/tech-challenge-blog-aulas-backend:$IMAGE_TAG"
+          docker push "$REGISTRY_LOGIN_SERVER/tech-challenge-blog-aulas-backend:latest"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
