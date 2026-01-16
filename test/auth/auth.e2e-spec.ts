@@ -3,11 +3,15 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { TestAuthHelper } from '../utils/test-auth.helper';
+import { DRIZZLE } from '@infra/database/drizzle.provider';
+import * as schema from '@infra/database/schema';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 import { DomainExceptionFilter } from '@common/filters/domain-exception.filter';
 
 describe('AuthModule (e2e)', () => {
   let app: INestApplication;
+  let db: PostgresJsDatabase<typeof schema>;
 
   beforeAll(async () => {
     TestAuthHelper.init();
@@ -21,11 +25,11 @@ describe('AuthModule (e2e)', () => {
       new ValidationPipe({ transform: true, whitelist: true }),
     );
     app.useGlobalFilters(new DomainExceptionFilter());
+    db = moduleFixture.get(DRIZZLE);
     await app.init();
   });
 
   afterAll(async () => {
-    await TestAuthHelper.close();
     await app.close();
   });
 
@@ -33,6 +37,7 @@ describe('AuthModule (e2e)', () => {
     it('should return 200 and access token with valid credentials', async () => {
       const password = 'securePassword123';
       const { user } = await TestAuthHelper.createAuthenticatedUser(
+        db,
         'ALUNO',
         password,
       );
@@ -53,6 +58,7 @@ describe('AuthModule (e2e)', () => {
     it('should return 401 with invalid credentials', async () => {
       // Create user so it exists
       const { user } = await TestAuthHelper.createAuthenticatedUser(
+        db,
         'ALUNO',
         'password123',
       );

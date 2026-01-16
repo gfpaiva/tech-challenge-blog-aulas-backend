@@ -32,7 +32,6 @@ describe('CommentsModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await TestAuthHelper.close();
     await app.close();
   });
 
@@ -45,7 +44,10 @@ describe('CommentsModule (e2e)', () => {
     categoryId = category.id;
 
     // Create a fresh post for each test to avoid comment clutter
-    const { user } = await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+    const { user } = await TestAuthHelper.createAuthenticatedUser(
+      db,
+      'PROFESSOR',
+    );
     const [post] = await db
       .insert(schema.posts)
       .values({
@@ -61,7 +63,7 @@ describe('CommentsModule (e2e)', () => {
   describe('/posts/:id/comments', () => {
     it('POST - should add a comment to a post', async () => {
       const { authorizationHeader, user } =
-        await TestAuthHelper.createAuthenticatedUser('ALUNO');
+        await TestAuthHelper.createAuthenticatedUser(db, 'ALUNO');
 
       const commentDto = { content: 'This is a comment' };
 
@@ -83,7 +85,10 @@ describe('CommentsModule (e2e)', () => {
 
     it('GET - should list comments for a post', async () => {
       // Add a comment first
-      const { user } = await TestAuthHelper.createAuthenticatedUser('ALUNO');
+      const { user } = await TestAuthHelper.createAuthenticatedUser(
+        db,
+        'ALUNO',
+      );
       await db.insert(schema.comments).values({
         content: 'Existing Comment',
         postId: postId,
