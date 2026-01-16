@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: To run project commands at terminal, utility commands and package.json commands
+---
+
 # Project Commands & Package Manager Rules
 
 > **CRITICAL INSTRUCTION FOR AGENTS:**

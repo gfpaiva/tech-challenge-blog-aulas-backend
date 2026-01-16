@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: When writing code to enforce Coding Style, Naming, Drizzle usage
+---
+
 # Coding Standards
 
 ## 1. Naming Conventions

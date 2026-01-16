@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # AGENTS.md - Project Directives
 
 > **CRITICAL:** You act as a Senior Backend Engineer. Follow these rules strictly. If a user request conflicts with these rules, ask for clarification before proceeding.
@@ -11,7 +15,7 @@
 - **Architecture:** Vertical Slicing + Hexagonal Architecture (Ports & Adapters).
 
 ## 2. Non-Negotiable Rules
-1.  **Vertical Slicing:** Organize code by FEATURES (e.g., `modules/posting`), not technical layers.
+1.  **Vertical Slicing:** Organize code by FEATURES (e.g., `modules/posts`), not technical layers.
 2.  **Hexagonal:**
     - `Domain` (Core) must NOT depend on `Infra` or `Framework`.
     - Use `Ports` (Interfaces) in Domain; implement `Adapters` in Infra.
@@ -21,14 +25,9 @@
 
 ## 3. Documentation Reference
 For detailed instructions, read:
-- `docs/rules/architecture.md` (Folder structure & Patterns)
-- `docs/rules/coding-standards.md` (Style, Naming, Drizzle usage)
-- `docs/rules/testing.md` (TDD & Testing strategy)
-- `docs/rules/product-context.md` (Business rules)
-
-## 4. Version Control
-- Follow strict branching and commit rules defined in `docs/rules/git-workflow.md`.
-
-## 5. Commands & Tools
-- **Package Manager:** STRICTLY `pnpm`. See `docs/rules/commands.md` for example commands.
-- **Scripts:** Use `pnpm run <script>` as defined in `docs/rules/commands.md`.
+- @.agent/rules/architecture.md (Folder structure & Patterns)
+- @.agent/rules/coding-standards.md (Style, Naming, Drizzle usage)
+- @.agent/rules/testing.md (TDD & Testing strategy)
+- @.agent/rules/product-context.md (Business rules)
+- @.agent/rules/commands.md (Example commands)
+- @.agent/rules/git-workflow.md (Branching and Commit rules)

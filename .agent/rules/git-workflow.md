@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: To work with gitflow, commits, branches, pull-requests
+---
+
 # Git Workflow & Standards
 
 > **STRICT:** Agents must follow these rules before creating branches or committing code. Consistency is mandatory.
@@ -14,6 +19,8 @@ Branches must be named based on the **Intent** and the **Module/Context** (Verti
 - `refactor`: Code restructuring without behavior change.
 - `docs`: Documentation only changes.
 - `chore`: Build process, dependency updates, config.
+- `style`: Code style changes.
+- `test`: Adding missing tests or correcting existing tests.
 
 ### Examples
 - ✅ `feat/posting/create-post` (Feature in Posting module)
