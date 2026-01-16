@@ -35,3 +35,6 @@ description: When writing code to enforce Coding Style, Naming, Drizzle usage
 ## 4. Error Handling
 - Always use custom Domain Exceptions on core layer, never use NestJS exceptions except on controllers or other NestJS layers.
 - Do not let Database Errors leak to the Controller. Catch them in Repository and throw Domain Errors.
+
+## 5. Good Pratices
+- Always keep in mind DRY (dont repeat yourself) and try to reuse lines of code
