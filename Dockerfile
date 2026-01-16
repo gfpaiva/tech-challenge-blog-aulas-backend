@@ -63,4 +63,4 @@ COPY --from=builder /app/src/infra/database/schema.ts ./src/infra/database/schem
 EXPOSE 3000
 
 # Start the application
-CMD ["sh", "-c", "pnpm run db:migrate && pnpm run start:prod"]
+CMD ["sh", "-c", "pnpm run db:migrate && node dist/scripts/seed.js && pnpm run start:prod"]

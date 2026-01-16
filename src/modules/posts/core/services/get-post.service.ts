@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Post } from '../entities/post.entity';
 import { IPostRepository } from '../ports/post.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
+import { ILoggerPort } from '@common/ports/logger.port';
 import { PostNotFoundError } from '../exceptions/post-not-found.error';
 
 import { PersistencePost, PostMapper } from '../../infra/mappers/post.mapper';
@@ -13,6 +14,7 @@ export class GetPostService {
   constructor(
     private readonly postRepository: IPostRepository,
     private readonly cache: ICachePort,
+    private readonly logger: ILoggerPort,
   ) {}
 
   async execute(id: string): Promise<Post> {
@@ -26,6 +28,7 @@ export class GetPostService {
 
     const post = await this.postRepository.findById(id);
     if (!post) {
+      this.logger.warn(`Post not found: ${id}`, 'GetPostService');
       throw new PostNotFoundError(id);
     }
 

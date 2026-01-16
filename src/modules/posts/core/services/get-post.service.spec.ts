@@ -4,6 +4,7 @@ import { IPostRepository } from '../ports/post.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
 import { PostNotFoundError } from '../exceptions/post-not-found.error';
 import { Post } from '../entities/post.entity';
+import { ILoggerPort } from '@common/ports/logger.port';
 
 describe('GetPostService', () => {
   let service: GetPostService;
@@ -36,6 +37,15 @@ describe('GetPostService', () => {
             get: jest.fn(),
             set: jest.fn(),
             del: jest.fn(),
+          },
+        },
+        {
+          provide: ILoggerPort,
+          useValue: {
+            log: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn(),
           },
         },
       ],

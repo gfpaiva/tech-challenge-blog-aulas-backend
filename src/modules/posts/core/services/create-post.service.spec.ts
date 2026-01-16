@@ -7,6 +7,7 @@ import { Post } from '../entities/post.entity';
 import { CategoryNotFoundError } from '../exceptions/category-not-found.error';
 import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 import { UserRole } from '@common/types';
+import { ILoggerPort } from '@common/ports/logger.port';
 
 describe('CreatePostService', () => {
   let service: CreatePostService;
@@ -46,6 +47,15 @@ describe('CreatePostService', () => {
           useValue: {
             del: jest.fn().mockResolvedValue(undefined),
             delMatch: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: ILoggerPort,
+          useValue: {
+            log: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn(),
           },
         },
       ],

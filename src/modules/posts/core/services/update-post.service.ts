@@ -9,6 +9,7 @@ import {
   Category,
 } from '../ports/category.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
+import { ILoggerPort } from '@common/ports/logger.port';
 
 export interface UpdatePostCommand {
   id: string;
@@ -27,6 +28,7 @@ export class UpdatePostService {
     private readonly categoryRepo: ICategoryRepository,
     @Inject(ICachePort)
     private readonly cache: ICachePort,
+    private readonly logger: ILoggerPort,
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<Post> {
@@ -39,6 +41,10 @@ export class UpdatePostService {
     }
 
     if (post.author.id !== authorId) {
+      this.logger.warn(
+        `Update blocked: User ${authorId} is not owner of ${id}`,
+        'UpdatePostService',
+      );
       throw new ForbiddenActionException();
     }
 
