@@ -1,4 +1,4 @@
-name: Continuous Deployment
+name: CD
 
 on:
   push:
@@ -21,6 +21,24 @@ jobs:
         id: release
         with:
           release-type: node
+  
+  newrelic:
+    runs-on: ubuntu-latest
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created || github.event_name == 'workflow_dispatch' }}
+    name: New Relic
+    steps:
+      # This step builds a var with the release tag value to use later
+      - name: Set Release Version from Tag
+        run: echo "RELEASE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      # This step creates a new Change Tracking Marker
+      - name: New Relic Application Deployment Marker
+        uses: newrelic/deployment-marker-action@v2.3.0
+        with:
+          apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
+          guid: ${{ secrets.NEW_RELIC_DEPLOYMENT_ENTITY_GUID }}
+          version: "${{ env.RELEASE_VERSION }}"
+          user: "${{ github.actor }}"
 
   deploy:
     runs-on: ubuntu-latest
