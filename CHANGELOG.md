@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.2.0...v1.2.1) (2026-01-16)
+
+
+### Bug Fixes
+
+* validate user role for create posts ([867e52c](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/867e52c8b1da2ca7a1ddad6c932ebf323443b137))
+
 ## [1.2.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.1.0...v1.2.0) (2026-01-16)
 
 
