@@ -2,6 +2,6 @@
   "*.ts": [
     "eslint --fix",
     "prettier --write",
-    "pnpm jest --bail --findRelatedTests --passWithNoTests"
+    "npm run test -- --bail --findRelatedTests --passWithNoTests"
   ]
 }

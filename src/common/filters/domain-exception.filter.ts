@@ -9,23 +9,9 @@ import { Response } from 'express';
 import { DomainError } from '../exceptions/domain.error';
 import { EntityNotFoundError } from '../exceptions/entity-not-found.error';
 
-@Catch()
+@Catch(DomainError)
 export class DomainExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
-    const error = exception as {
-      message?: string;
-      constructor?: { name?: string };
-    };
-
-    // Check if it's a DomainError or specific error we care about (handling import mismatch)
-    const isDomainError = exception instanceof DomainError;
-    const isInvalidCredentials =
-      error?.constructor?.name === 'InvalidCredentialsError';
-
-    if (!isDomainError && !isInvalidCredentials) {
-      throw exception;
-    }
-
+  catch(exception: DomainError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
@@ -37,27 +23,33 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (error?.constructor?.name === 'InvalidCredentialsError') {
+    if (exception.constructor.name === 'InvalidCredentialsError') {
       response.status(HttpStatus.UNAUTHORIZED).json({
         statusCode: HttpStatus.UNAUTHORIZED,
-        message: error.message,
+        message: exception.message,
         error: 'Unauthorized',
       });
       return;
     }
 
-    if (error?.constructor?.name === 'ForbiddenActionException') {
+    if (exception.constructor.name === 'ForbiddenActionException') {
       response.status(HttpStatus.FORBIDDEN).json({
         statusCode: HttpStatus.FORBIDDEN,
-        message: error.message,
+        message: exception.message,
         error: 'Forbidden',
       });
       return;
     }
 
+    // Default handling for other DomainErrors (fallback to 500 or specific mapping if needed)
+    // For now, let's treat unknown domain errors as internal server errors or just BadRequest if they imply validation failure (though validation usually goes via class-validator)
+    // Adjusting to generic 500 for unhandled domain errors for safety, or rethrow.
+    // But usually DomainErrors are "Bad Request" (400) or "Unprocessable Entity" (422) if not Not Found.
+    // Let's default to 400 Bad Request for generic DomainErrors for now, assuming they are business rule violations.
+
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
-      message: error.message,
+      message: exception.message,
       error: 'Bad Request',
     });
   }
