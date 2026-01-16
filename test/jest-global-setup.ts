@@ -33,7 +33,7 @@ export default async () => {
 
   console.log('🔹 Running Migrations...');
   try {
-    execSync('pnpm db:migrate', {
+    execSync('npm run db:migrate', {
       env: {
         ...process.env,
         DATABASE_URL: databaseUrl,
