@@ -5,6 +5,7 @@ import { ICategoryRepository } from '../ports/category.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
 import { Post } from '../entities/post.entity';
 import { CategoryNotFoundError } from '../exceptions/category-not-found.error';
+import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 import { UserRole } from '@common/types';
 
 describe('CreatePostService', () => {
@@ -59,6 +60,7 @@ describe('CreatePostService', () => {
   it('should create a post successfully and invalidate cache', async () => {
     const command = {
       authorId: 'user-1',
+      authorRole: 'PROFESSOR' as UserRole,
       title: 'Title',
       content: 'Content',
       categoryId: 1,
@@ -77,6 +79,7 @@ describe('CreatePostService', () => {
 
     const command = {
       authorId: 'user-1',
+      authorRole: 'PROFESSOR' as UserRole,
       title: 'Title',
       content: 'Content',
       categoryId: 999,
@@ -87,5 +90,21 @@ describe('CreatePostService', () => {
     );
     expect(postRepository.create).not.toHaveBeenCalled();
     expect(cacheManager.del).not.toHaveBeenCalled();
+  });
+
+  it('should throw ForbiddenActionException if user is not PROFESSOR', async () => {
+    const command = {
+      authorId: 'user-1',
+      authorRole: 'ALUNO' as UserRole,
+      title: 'Title',
+      content: 'Content',
+      categoryId: 1,
+    };
+
+    await expect(service.execute(command)).rejects.toThrow(
+      ForbiddenActionException,
+    );
+    expect(postRepository.create).not.toHaveBeenCalled();
+    expect(cacheManager.delMatch).not.toHaveBeenCalled();
   });
 });

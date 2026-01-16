@@ -5,9 +5,11 @@ import { ICategoryRepository } from '../ports/category.repository.port';
 import { Post } from '../entities/post.entity';
 import { ICachePort } from '@common/ports/cache.port';
 import { UserRole } from '@common/types';
+import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 
 interface CreatePostCommand {
   authorId: string;
+  authorRole: UserRole;
   title: string;
   content: string;
   categoryId: number;
@@ -25,6 +27,10 @@ export class CreatePostService {
   ) {}
 
   async execute(command: CreatePostCommand): Promise<Post> {
+    if (command.authorRole !== 'PROFESSOR') {
+      throw new ForbiddenActionException('Only professors can create posts');
+    }
+
     const category = await this.categoryRepository.findById(command.categoryId);
 
     if (!category) {
@@ -38,7 +44,7 @@ export class CreatePostService {
       {
         id: command.authorId,
         name: '', // Placeholder
-        role: 'PROFESSOR' as UserRole, // Placeholder
+        role: command.authorRole,
       },
       category,
       new Date(),

@@ -31,6 +31,8 @@ import {
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 
+import { UserRole } from '@common/types';
+
 @Controller('posts')
 export class PostsController {
   constructor(
@@ -47,11 +49,12 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() dto: CreatePostDto,
-    @CurrentUser() user: { id: string },
+    @CurrentUser() user: { id: string; role: UserRole },
   ): Promise<PostDetailResponseDto> {
     const post = await this.createPostService.execute({
       ...dto,
       authorId: user.id,
+      authorRole: user.role,
     });
     return PostDetailResponseDto.fromDomain(post);
   }

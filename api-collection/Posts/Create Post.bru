@@ -45,6 +45,7 @@ docs {
   - `categoryId`: Number - **Obrigatório**
   
   ### Comportamento
+  - Valida se o usuário logado possui a role `PROFESSOR`. Caso contrário, retorna erro `403 Forbidden`.
   - Valida se a categoria existe.
   - Invalida o cache de listagem (`posts:list:*`).
   - O autor é inferido automaticamente do token JWT (`CreateUser` decorator).
