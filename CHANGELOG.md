@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.2.1...v1.3.0) (2026-01-16)
+
+
+### Features
+
+* create comment ([f4e1991](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/f4e1991b7ebd812a542d7c6225633cca84d317d7))
+
 ## [1.2.1](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.2.0...v1.2.1) (2026-01-16)
 
 
