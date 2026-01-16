@@ -25,13 +25,12 @@ export class DatabaseCleaner {
 
     if (result.length > 0) {
       // Build SQL with properly quoted identifiers
-      const [first, ...rest] = result.map((row) =>
-        sql.identifier(row.tablename),
-      );
-      const tableIdentifiers = rest.reduce(
-        (acc, identifier) => sql`${acc}, ${identifier}`,
-        first,
-      );
+      const identifiers = result.map((row) => sql.identifier(row.tablename));
+      // Combine identifiers into a comma-separated list
+      let tableIdentifiers = identifiers[0];
+      for (let i = 1; i < identifiers.length; i++) {
+        tableIdentifiers = sql`${tableIdentifiers}, ${identifiers[i]}`;
+      }
       await this.db.execute(sql`TRUNCATE TABLE ${tableIdentifiers} CASCADE`);
     }
   }
