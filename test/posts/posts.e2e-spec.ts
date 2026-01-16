@@ -16,7 +16,7 @@ describe('PostsModule (e2e)', () => {
   let categoryId: number;
 
   beforeAll(async () => {
-    TestAuthHelper.init(); // Init helper pool
+    TestAuthHelper.init();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,7 +32,6 @@ describe('PostsModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await TestAuthHelper.close();
     await app.close();
   });
 
@@ -51,7 +50,7 @@ describe('PostsModule (e2e)', () => {
   describe('/posts', () => {
     it('POST /posts - should create a new post (Authenticated)', async () => {
       const { authorizationHeader, user } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
 
       const createDto = {
         title: 'New E2E Post',
@@ -88,7 +87,7 @@ describe('PostsModule (e2e)', () => {
     it('GET /posts - should return paginated posts', async () => {
       // Create a few posts
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
 
       await request(app.getHttpServer())
         .post('/posts')
@@ -113,7 +112,7 @@ describe('PostsModule (e2e)', () => {
 
     beforeEach(async () => {
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
       authHeader = authorizationHeader;
 
       const res = await request(app.getHttpServer())
@@ -167,7 +166,7 @@ describe('PostsModule (e2e)', () => {
   describe('GET /posts/search', () => {
     it('should search posts by title', async () => {
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
       await request(app.getHttpServer())
         .post('/posts')
         .set(authorizationHeader)
