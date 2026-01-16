@@ -18,12 +18,19 @@ export class DatabaseCleaner {
       SELECT tablename 
       FROM pg_tables 
       WHERE schemaname = 'public' 
+        AND tablename NOT LIKE 'pg_%'
+        AND tablename NOT LIKE '_drizzle_%'
         AND tablename != '_migrations'
     `);
 
     if (result.length > 0) {
-      const tables = result.map((row) => `"${row.tablename}"`).join(', ');
-      await this.db.execute(sql.raw(`TRUNCATE TABLE ${tables} CASCADE`));
+      // Build SQL with properly quoted identifiers
+      const tableIdentifiers = result
+        .map((row) => sql.identifier(row.tablename))
+        .reduce((acc, identifier, idx) =>
+          idx === 0 ? identifier : sql`${acc}, ${identifier}`,
+        );
+      await this.db.execute(sql`TRUNCATE TABLE ${tableIdentifiers} CASCADE`);
     }
   }
 
