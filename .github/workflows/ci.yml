@@ -49,6 +49,10 @@ jobs:
       - name: Unit Tests with Coverage
         run: pnpm run test:cov
 
+      - name: E2E Tests
+        run: pnpm run test:e2e
+
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
