@@ -36,4 +36,39 @@ export class DrizzleCommentRepository implements ICommentRepository {
 
     return results.map((result) => CommentMapper.toDomain(result));
   }
+
+  async create(comment: Comment): Promise<Comment> {
+    const [inserted] = await this.db
+      .insert(comments)
+      .values({
+        content: comment.content,
+        postId: comment.postId,
+        authorId: comment.author.id,
+        creationDate: comment.creationDate,
+      })
+      .returning();
+
+    const [created] = await this.db
+      .select({
+        id: comments.id,
+        content: comments.content,
+        postId: comments.postId,
+        creationDate: comments.creationDate,
+        author: {
+          id: users.id,
+          name: users.name,
+          role: users.role,
+        },
+      })
+      .from(comments)
+      .leftJoin(users, eq(comments.authorId, users.id))
+      .where(eq(comments.id, inserted.id))
+      .limit(1);
+
+    if (!created) {
+      throw new Error('Failed to create comment');
+    }
+
+    return CommentMapper.toDomain(created);
+  }
 }

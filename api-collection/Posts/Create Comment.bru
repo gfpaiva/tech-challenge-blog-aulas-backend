@@ -1,0 +1,30 @@
+meta {
+  name: Create Comment
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{host}}/posts/{{postId}}/comments
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "content": "This is a comment on the post"
+  }
+}
+
+vars:pre-request {
+  postId: 
+}
+
+docs {
+  Criar um comentário em um post.
+  Requer autenticação e um post existente.
+}

@@ -12,6 +12,7 @@ import { GetPostCommentsService } from './core/services/get-post-comments.servic
 import { ICommentRepository } from './core/ports/comment.repository.port';
 import { DrizzleCommentRepository } from './infra/database/drizzle-comment.repository';
 import { CreatePostService } from './core/services/create-post.service';
+import { CreateCommentService } from './core/services/create-comment.service';
 import { UpdatePostService } from './core/services/update-post.service';
 import { DeletePostService } from './core/services/delete-post.service';
 import { SearchPostsService } from './core/services/search-posts.service';
@@ -25,7 +26,7 @@ import { DrizzleCategoryRepository } from './infra/database/drizzle-category.rep
     ListPostsService,
     GetPostService,
     CreatePostService,
-    CreatePostService,
+    CreateCommentService,
     GetPostCommentsService,
     UpdatePostService,
     DeletePostService,

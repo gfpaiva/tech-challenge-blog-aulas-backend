@@ -15,6 +15,14 @@ import { CACHE_CLIENT } from './cache.constants';
         return new Redis({
           host: config.get('REDIS_HOST'),
           port: config.get('REDIS_PORT'),
+          ...(process.env.NODE_ENV === 'production'
+            ? {
+                password: config.get('REDIS_PASSWORD'),
+                tls: {
+                  servername: config.get('REDIS_HOST'),
+                },
+              }
+            : {}),
         });
       },
     },

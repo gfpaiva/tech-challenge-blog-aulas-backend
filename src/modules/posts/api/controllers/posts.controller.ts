@@ -19,6 +19,7 @@ import { UpdatePostService } from '@modules/posts/core/services/update-post.serv
 import { GetPostCommentsService } from '@modules/posts/core/services/get-post-comments.service';
 import { DeletePostService } from '@modules/posts/core/services/delete-post.service';
 import { SearchPostsService } from '@modules/posts/core/services/search-posts.service';
+import { CreateCommentService } from '@modules/posts/core/services/create-comment.service';
 import {
   ListPostsDto,
   PostResponseDto,
@@ -27,6 +28,7 @@ import {
   CreatePostDto,
   UpdatePostDto,
   SearchPostDto,
+  CreateCommentDto,
 } from '../dtos';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
@@ -43,6 +45,7 @@ export class PostsController {
     private readonly getCommentsService: GetPostCommentsService,
     private readonly deletePostService: DeletePostService,
     private readonly searchPostsService: SearchPostsService,
+    private readonly createCommentService: CreateCommentService,
   ) {}
 
   @Post()
@@ -105,6 +108,23 @@ export class PostsController {
   ): Promise<PostDetailResponseDto> {
     const post = await this.getPostService.execute(id);
     return PostDetailResponseDto.fromDomain(post);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async createComment(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateCommentDto,
+    @CurrentUser() user: { id: string; role: UserRole },
+  ): Promise<CommentDto> {
+    const comment = await this.createCommentService.execute({
+      ...dto,
+      postId: id,
+      authorId: user.id,
+      authorRole: user.role,
+    });
+    return CommentDto.fromDomain(comment);
   }
 
   @Get(':id/comments')
