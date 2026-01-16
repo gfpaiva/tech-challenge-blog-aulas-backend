@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserRole } from '@common/types';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from '@infra/database/schema';
-import { sql } from 'drizzle-orm';
 
 export class TestAuthHelper {
   private static jwtService: JwtService | undefined;
@@ -32,9 +31,13 @@ export class TestAuthHelper {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Insert user into DB using drizzle
-    await db.execute(
-      sql`INSERT INTO users (id, name, email, password_hash, role) VALUES (${id}, ${name}, ${email}, ${passwordHash}, ${role})`,
-    );
+    await db.insert(schema.users).values({
+      id,
+      name,
+      email,
+      passwordHash,
+      role,
+    });
 
     const payload = { sub: id, id, role };
     const accessToken = this.jwtService!.sign(payload);
