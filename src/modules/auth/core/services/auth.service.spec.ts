@@ -4,12 +4,14 @@ import { IUserRepository } from '../../../users/core/ports/user.repository';
 import { IPasswordService } from '../ports/password.service';
 import { InvalidCredentialsError } from '../exceptions/invalid-credentials.error';
 import { UserRole } from '@common/types';
+import { ILoggerPort } from '@common/ports/logger.port';
 
 describe('AuthService', () => {
   let service: AuthService;
   let userRepository: jest.Mocked<IUserRepository>;
   let passwordService: jest.Mocked<IPasswordService>;
   let jwtService: jest.Mocked<JwtService>;
+  let logger: jest.Mocked<ILoggerPort>;
 
   beforeEach(() => {
     userRepository = {
@@ -26,7 +28,19 @@ describe('AuthService', () => {
       sign: jest.fn(),
     } as any;
 
-    service = new AuthService(userRepository, passwordService, jwtService);
+    logger = {
+      log: jest.fn(),
+      warn: jest.fn(),
+      error: jest.fn(),
+      debug: jest.fn(),
+    } as any;
+
+    service = new AuthService(
+      userRepository,
+      passwordService,
+      jwtService,
+      logger,
+    );
   });
 
   it('should be defined', () => {
