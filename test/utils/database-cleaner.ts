@@ -25,11 +25,13 @@ export class DatabaseCleaner {
 
     if (result.length > 0) {
       // Build SQL with properly quoted identifiers
-      const tableIdentifiers = result
-        .map((row) => sql.identifier(row.tablename))
-        .reduce((acc, identifier, idx) =>
-          idx === 0 ? identifier : sql`${acc}, ${identifier}`,
-        );
+      const [first, ...rest] = result.map((row) =>
+        sql.identifier(row.tablename),
+      );
+      const tableIdentifiers = rest.reduce(
+        (acc, identifier) => sql`${acc}, ${identifier}`,
+        first,
+      );
       await this.db.execute(sql`TRUNCATE TABLE ${tableIdentifiers} CASCADE`);
     }
   }
