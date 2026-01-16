@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../../src/app.module';
-import { TestAuthHelper } from '../utils/test-auth.helper';
+import { TestDatabaseHelper } from '../utils/test-database.helper';
 import { DRIZZLE } from '@infra/database/drizzle.provider';
 import * as schema from '@infra/database/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
@@ -16,7 +16,7 @@ describe('PostsModule (e2e)', () => {
   let categoryId: number;
 
   beforeAll(async () => {
-    TestAuthHelper.init(); // Init helper pool
+    TestDatabaseHelper.init(); // Init helper pool
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,7 +32,7 @@ describe('PostsModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await TestAuthHelper.close();
+    await TestDatabaseHelper.close();
     await app.close();
   });
 
@@ -51,7 +51,7 @@ describe('PostsModule (e2e)', () => {
   describe('/posts', () => {
     it('POST /posts - should create a new post (Authenticated)', async () => {
       const { authorizationHeader, user } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestDatabaseHelper.createAuthenticatedUser('PROFESSOR');
 
       const createDto = {
         title: 'New E2E Post',
@@ -88,7 +88,7 @@ describe('PostsModule (e2e)', () => {
     it('GET /posts - should return paginated posts', async () => {
       // Create a few posts
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestDatabaseHelper.createAuthenticatedUser('PROFESSOR');
 
       await request(app.getHttpServer())
         .post('/posts')
@@ -113,7 +113,7 @@ describe('PostsModule (e2e)', () => {
 
     beforeEach(async () => {
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestDatabaseHelper.createAuthenticatedUser('PROFESSOR');
       authHeader = authorizationHeader;
 
       const res = await request(app.getHttpServer())
@@ -167,7 +167,7 @@ describe('PostsModule (e2e)', () => {
   describe('GET /posts/search', () => {
     it('should search posts by title', async () => {
       const { authorizationHeader } =
-        await TestAuthHelper.createAuthenticatedUser('PROFESSOR');
+        await TestDatabaseHelper.createAuthenticatedUser('PROFESSOR');
       await request(app.getHttpServer())
         .post('/posts')
         .set(authorizationHeader)

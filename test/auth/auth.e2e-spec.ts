@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../../src/app.module';
-import { TestAuthHelper } from '../utils/test-auth.helper';
+import { TestDatabaseHelper } from '../utils/test-database.helper';
 
 import { DomainExceptionFilter } from '@common/filters/domain-exception.filter';
 
@@ -10,7 +10,7 @@ describe('AuthModule (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    TestAuthHelper.init();
+    TestDatabaseHelper.init();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -25,14 +25,14 @@ describe('AuthModule (e2e)', () => {
   });
 
   afterAll(async () => {
-    await TestAuthHelper.close();
+    await TestDatabaseHelper.close();
     await app.close();
   });
 
   describe('POST /auth/login', () => {
     it('should return 200 and access token with valid credentials', async () => {
       const password = 'securePassword123';
-      const { user } = await TestAuthHelper.createAuthenticatedUser(
+      const { user } = await TestDatabaseHelper.createAuthenticatedUser(
         'ALUNO',
         password,
       );
@@ -52,7 +52,7 @@ describe('AuthModule (e2e)', () => {
 
     it('should return 401 with invalid credentials', async () => {
       // Create user so it exists
-      const { user } = await TestAuthHelper.createAuthenticatedUser(
+      const { user } = await TestDatabaseHelper.createAuthenticatedUser(
         'ALUNO',
         'password123',
       );
