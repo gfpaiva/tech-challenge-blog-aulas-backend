@@ -8,6 +8,7 @@ import { PostNotFoundError } from '../exceptions/post-not-found.error';
 import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 import { CategoryNotFoundError } from '../exceptions/category-not-found.error';
 import { UserRole } from '@common/types';
+import { ILoggerPort } from '@common/ports/logger.port';
 
 describe('UpdatePostService', () => {
   let service: UpdatePostService;
@@ -59,6 +60,15 @@ describe('UpdatePostService', () => {
           useValue: {
             del: jest.fn(),
             delMatch: jest.fn(),
+          },
+        },
+        {
+          provide: ILoggerPort,
+          useValue: {
+            log: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn(),
           },
         },
       ],
