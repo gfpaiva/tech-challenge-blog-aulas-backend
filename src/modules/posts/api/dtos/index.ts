@@ -5,3 +5,4 @@ export * from './post-detail-response.dto';
 export * from './comment-response.dto';
 export * from './update-post.dto';
 export * from './search-post.dto';
+export * from './create-comment.dto';
