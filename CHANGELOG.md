@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.3.0...v1.4.0) (2026-01-16)
+
+
+### Features
+
+* **infra:** implement logging and request tracking ([#11](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/11)) ([fbc4418](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/fbc441891542c8084a97c1f3cc0ca1f27429ca39))
+
 ## [1.3.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.2.1...v1.3.0) (2026-01-16)
 
 
