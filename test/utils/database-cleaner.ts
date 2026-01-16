@@ -1,46 +1,33 @@
-import { Pool } from 'pg';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { sql } from 'drizzle-orm';
+import * as schema from '@infra/database/schema';
 
 export class DatabaseCleaner {
-  private static pool: Pool | undefined;
+  private static db: PostgresJsDatabase<typeof schema> | undefined;
+
+  static setDatabase(db: PostgresJsDatabase<typeof schema>) {
+    this.db = db;
+  }
 
   static async clean() {
-    if (!process.env.DATABASE_URL) {
-      throw new Error('DATABASE_URL is not defined');
+    if (!this.db) {
+      throw new Error('Database instance not set. Call setDatabase() first.');
     }
 
-    if (!this.pool) {
-      this.pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-      });
-      this.pool.on('error', (err) =>
-        console.error('DatabaseCleaner Pool Error:', err),
-      );
-    }
+    const result = await this.db.execute<{ tablename: string }>(sql`
+      SELECT tablename 
+      FROM pg_tables 
+      WHERE schemaname = 'public' 
+        AND tablename != '_migrations'
+    `);
 
-    const client = await this.pool.connect();
-    try {
-      const result = await client.query(`
-        SELECT tablename 
-        FROM pg_tables 
-        WHERE schemaname = 'public' 
-          AND tablename != '_migrations';
-      `);
-
-      if (result.rows.length > 0) {
-        const tables = (result.rows as { tablename: string }[])
-          .map((row) => `"${row.tablename}"`)
-          .join(', ');
-        await client.query(`TRUNCATE TABLE ${tables} CASCADE;`);
-      }
-    } finally {
-      client.release();
+    if (result.length > 0) {
+      const tables = result.map((row) => `"${row.tablename}"`).join(', ');
+      await this.db.execute(sql.raw(`TRUNCATE TABLE ${tables} CASCADE`));
     }
   }
 
-  static async close() {
-    if (this.pool) {
-      await this.pool.end();
-      this.pool = undefined;
-    }
+  static reset() {
+    this.db = undefined;
   }
 }
