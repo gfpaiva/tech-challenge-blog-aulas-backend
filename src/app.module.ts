@@ -6,6 +6,7 @@ import { CacheModule } from './infra/cache/cache.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { UsersModule } from './modules/users/users.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersModule } from './modules/users/users.module';
     AuthModule,
     PostsModule,
     UsersModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],
