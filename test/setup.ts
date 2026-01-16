@@ -46,7 +46,3 @@ for (const key of requiredEnvVars) {
 afterEach(async () => {
   await DatabaseCleaner.clean();
 });
-
-afterAll(async () => {
-  await DatabaseCleaner.close();
-});

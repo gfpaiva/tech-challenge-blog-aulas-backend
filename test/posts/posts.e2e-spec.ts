@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { TestAuthHelper } from '../utils/test-auth.helper';
+import { DatabaseCleaner } from '../utils/database-cleaner';
 import { DRIZZLE } from '@infra/database/drizzle.provider';
 import * as schema from '@infra/database/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
@@ -28,6 +29,7 @@ describe('PostsModule (e2e)', () => {
     );
     app.useGlobalFilters(new DomainExceptionFilter());
     db = moduleFixture.get(DRIZZLE);
+    DatabaseCleaner.setDb(db);
     await app.init();
   });
 
