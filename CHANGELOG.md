@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.1.0...v1.2.0) (2026-01-16)
+
+
+### Features
+
+* add healthcheck endpoint ([10b256c](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/10b256c9da28d9a5beead564cb66589f867069b6))
+* add healthcheck endpoint ([874ae4c](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/874ae4c55ea8e6ae0d2a6a4ae8eb30a68dff2abe))
+
 ## [1.1.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.0.0...v1.1.0) (2026-01-15)
 
 
