@@ -10,11 +10,19 @@ export default async () => {
     .__REDIS_CONTAINER__ as StartedRedisContainer;
 
   if (postgresContainer) {
-    await postgresContainer.stop();
+    try {
+      await postgresContainer.stop();
+    } catch (error) {
+      console.error('Error while stopping PostgreSQL test container during global teardown:', error);
+    }
   }
 
   if (redisContainer) {
-    await redisContainer.stop();
+    try {
+      await redisContainer.stop();
+    } catch (error) {
+      console.error('Error while stopping Redis test container during global teardown:', error);
+    }
   }
 
   // clean up env file
