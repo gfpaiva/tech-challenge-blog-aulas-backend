@@ -79,6 +79,10 @@ export class TestDatabaseHelper {
   ) {
     this.init();
 
+    if (!this.jwtService) {
+      throw new Error('JWT Service failed to initialize');
+    }
+
     const id = uuidv4();
     const name = `Test User ${id.substring(0, 8)}`;
     const email = `test.${id}@example.com`;
@@ -95,7 +99,7 @@ export class TestDatabaseHelper {
     }
 
     const payload = { sub: id, id, role };
-    const accessToken = this.jwtService!.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
       user: { id, name, email, role },
@@ -113,5 +117,6 @@ export class TestDatabaseHelper {
       await this.pool.end();
       this.pool = undefined;
     }
+    this.jwtService = undefined;
   }
 }
