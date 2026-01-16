@@ -41,12 +41,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    // Default handling for other DomainErrors (fallback to 500 or specific mapping if needed)
-    // For now, let's treat unknown domain errors as internal server errors or just BadRequest if they imply validation failure (though validation usually goes via class-validator)
-    // Adjusting to generic 500 for unhandled domain errors for safety, or rethrow.
-    // But usually DomainErrors are "Bad Request" (400) or "Unprocessable Entity" (422) if not Not Found.
-    // Let's default to 400 Bad Request for generic DomainErrors for now, assuming they are business rule violations.
-
+    // Default handling for other domain errors (business rule violations)
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
       message: exception.message,
