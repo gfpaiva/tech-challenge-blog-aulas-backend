@@ -20,31 +20,35 @@ export class DrizzlePostRepository implements IPostRepository {
     >,
   ) {}
 
+  private getBaseQuery() {
+    return this.db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        content: posts.content,
+        creationDate: posts.creationDate,
+        updateDate: posts.updateDate,
+        author: {
+          id: users.id,
+          name: users.name,
+          role: users.role,
+        },
+        category: {
+          id: categories.id,
+          name: categories.name,
+        },
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
+      .leftJoin(categories, eq(posts.categoryId, categories.id));
+  }
+
   async findAll(params: FindAllPostsParams): Promise<PaginatedPostsResult> {
     const { page, limit } = params;
     const offset = (page - 1) * limit;
 
     const [results, totalCount] = await Promise.all([
-      this.db
-        .select({
-          id: posts.id,
-          title: posts.title,
-          content: posts.content,
-          creationDate: posts.creationDate,
-          updateDate: posts.updateDate,
-          author: {
-            id: users.id,
-            name: users.name,
-            role: users.role,
-          },
-          category: {
-            id: categories.id,
-            name: categories.name,
-          },
-        })
-        .from(posts)
-        .leftJoin(users, eq(posts.authorId, users.id))
-        .leftJoin(categories, eq(posts.categoryId, categories.id))
+      this.getBaseQuery()
         .orderBy(desc(posts.creationDate))
         .limit(limit)
         .offset(offset),
@@ -64,26 +68,7 @@ export class DrizzlePostRepository implements IPostRepository {
   }
 
   async search(term: string): Promise<Post[]> {
-    const results = await this.db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        content: posts.content,
-        creationDate: posts.creationDate,
-        updateDate: posts.updateDate,
-        author: {
-          id: users.id,
-          name: users.name,
-          role: users.role,
-        },
-        category: {
-          id: categories.id,
-          name: categories.name,
-        },
-      })
-      .from(posts)
-      .leftJoin(users, eq(posts.authorId, users.id))
-      .leftJoin(categories, eq(posts.categoryId, categories.id))
+    const results = await this.getBaseQuery()
       .where(
         or(ilike(posts.title, `%${term}%`), ilike(posts.content, `%${term}%`)),
       )
@@ -93,28 +78,7 @@ export class DrizzlePostRepository implements IPostRepository {
   }
 
   async findById(id: string): Promise<Post | null> {
-    const [result] = await this.db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        content: posts.content,
-        creationDate: posts.creationDate,
-        updateDate: posts.updateDate,
-        author: {
-          id: users.id,
-          name: users.name,
-          role: users.role,
-        },
-        category: {
-          id: categories.id,
-          name: categories.name,
-        },
-      })
-      .from(posts)
-      .leftJoin(users, eq(posts.authorId, users.id))
-      .leftJoin(categories, eq(posts.categoryId, categories.id))
-      .where(eq(posts.id, id))
-      .limit(1);
+    const [result] = await this.getBaseQuery().where(eq(posts.id, id)).limit(1);
 
     if (!result) {
       return null;

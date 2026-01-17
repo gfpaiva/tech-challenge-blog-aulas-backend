@@ -1,14 +1,19 @@
+---
+trigger: model_decision
+description: Understanding of general business rules from the project
+---
+
 # Product Context: Educational Blogging Platform
 
 ## 1. Goal
 A high-performance backend for teachers to publish classes (posts) and students to consume them.
 
 ## 2. Actors (Roles)
-- **Teacher (Docente):**
+- **Teacher (PROFESSOR):**
   - Can CREATE, EDIT, DELETE own posts.
   - Can manage Categories.
   - Can moderate comments on their posts.
-- **Student (Aluno):**
+- **Student (ALUNO):**
   - Can READ posts.
   - Can FILTER by Category.
   - Can COMMENT on posts.

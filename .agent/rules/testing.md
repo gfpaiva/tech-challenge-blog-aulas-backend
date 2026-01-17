@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: When working on unit tests
+---
+
 # Testing Strategy
 
 ## 1. Philosophy

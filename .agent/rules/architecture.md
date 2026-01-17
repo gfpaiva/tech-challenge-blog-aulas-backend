@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: When working on folders, architecture decision. layer decision (Folder structure & Patterns)
+---
+
 # Architecture & Folder Structure
 
 ## Pattern: Vertical Slicing with Hexagonal Arch
