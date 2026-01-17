@@ -114,7 +114,7 @@ Cada módulo flui para dentro, protegendo o Domínio:
 ## 🔗 Acesso e Documentação da API
 
 A aplicação em produção está acessível através da seguinte URL:
-*   [http://tech-challenge-blog-aulas-backend.azurewebsites.net/](http://tech-challenge-blog-aulas-backend.azurewebsites.net/)
+*   [https://tech-challenge-blog-aulas-backend.azurewebsites.net/](https://tech-challenge-blog-aulas-backend.azurewebsites.net/)
 
 ### API Collection
 Para facilitar o uso e testes dos endpoints, incluímos uma coleção do api-client **[Bruno](https://www.usebruno.com/)** no diretório `api-collection`.
