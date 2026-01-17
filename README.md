@@ -99,7 +99,7 @@ Cada módulo flui para dentro, protegendo o Domínio:
     pnpm run db:migrate
     ```
 
-6. **Execute população de dados**:
+6.  **Execute população de dados**:
     ```bash
     pnpm run seed
     ```
