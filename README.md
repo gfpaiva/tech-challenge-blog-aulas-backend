@@ -1,5 +1,10 @@
 # [Tech Challenge: Blog Aulas Backend](tech-challenge-blog-aulas-backend.azurewebsites.net/health)
 
+![image](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) ![image](https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white) ![image](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) ![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white) ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) ![image](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white) ![image](https://img.shields.io/badge/microsoft%20azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gfpaiva_tech-challenge-blog-aulas-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=gfpaiva_tech-challenge-blog-aulas-backend) 
+
 Este repositório contém o serviço de backend para a plataforma **Blog Aulas**, desenvolvido como parte de um Tech Challenge do curso Full Stack Development da FIAP.
 
 ## 📋 Índice
@@ -131,7 +136,7 @@ Seguimos os princípios do **Gitflow** e **Conventional Commits**.
 ---
 
 ## Quality Gates e Validação
-
+`
 1.  **Análise Estática**: ESLint e Prettier para estilo de código.
 2.  **Testes**: Testes Unitários e End-to-End devem passar.
 3.  **[SonarCloud](https://sonarcloud.io/)**: Análise automática de code smells, bugs e hotspots de segurança.
