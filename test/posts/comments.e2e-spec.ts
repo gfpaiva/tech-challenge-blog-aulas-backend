@@ -85,6 +85,42 @@ describe('CommentsModule (e2e)', () => {
       expect(body.author.id).toBe(user.id);
     });
 
+    it('POST - should return 400 if validation fails', async () => {
+      const { authorizationHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'ALUNO');
+
+      const invalidDto = { content: '' };
+
+      const res = await request(app.getHttpServer())
+        .post(`/posts/${postId}/comments`)
+        .set(authorizationHeader)
+        .send(invalidDto)
+        .expect(400);
+
+      expect((res.body as { message: string | string[] }).message).toContain(
+        'content should not be empty',
+      );
+    });
+
+    it('POST - should return 404 if post does not exist', async () => {
+      const { authorizationHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'ALUNO');
+      const fakeId = '00000000-0000-0000-0000-000000000000';
+
+      await request(app.getHttpServer())
+        .post(`/posts/${fakeId}/comments`)
+        .set(authorizationHeader)
+        .send({ content: 'Nice post!' })
+        .expect(404);
+    });
+
+    it('POST - should return 401 if unauthenticated', async () => {
+      await request(app.getHttpServer())
+        .post(`/posts/${postId}/comments`)
+        .send({ content: 'Nice post!' })
+        .expect(401);
+    });
+
     it('GET - should list comments for a post', async () => {
       // Add a comment first
       const { user } = await TestAuthHelper.createAuthenticatedUser(
@@ -105,6 +141,13 @@ describe('CommentsModule (e2e)', () => {
       expect(body).toBeInstanceOf(Array);
       expect(body.length).toBeGreaterThanOrEqual(1);
       expect(body[0].content).toBe('Existing Comment');
+    });
+
+    it('GET - should return 404 if post does not exist', async () => {
+      const fakeId = '00000000-0000-0000-0000-000000000000';
+      await request(app.getHttpServer())
+        .get(`/posts/${fakeId}/comments`)
+        .expect(404);
     });
   });
 });

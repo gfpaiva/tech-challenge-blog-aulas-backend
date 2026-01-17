@@ -86,6 +86,49 @@ describe('PostsModule (e2e)', () => {
       expect(persisted.title).toBe(createDto.title);
     });
 
+    it('POST /posts - should return 400 if validation fails', async () => {
+      const { authorizationHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
+
+      const invalidDto = {
+        title: '', // Empty title
+        content: 'Content of E2E post',
+        categoryId: categoryId,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/posts')
+        .set(authorizationHeader)
+        .send(invalidDto)
+        .expect(400);
+
+      expect(
+        (response.body as { message: string | string[] }).message,
+      ).toContain('title should not be empty');
+    });
+
+    it('POST /posts - should return 401 if unauthenticated', async () => {
+      await request(app.getHttpServer())
+        .post('/posts')
+        .send({ title: 'Title', content: '...', categoryId })
+        .expect(401);
+    });
+
+    it('POST /posts - should return 403 if user is not a professor', async () => {
+      const { authorizationHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'ALUNO');
+
+      await request(app.getHttpServer())
+        .post('/posts')
+        .set(authorizationHeader)
+        .send({
+          title: 'Forbidden Post',
+          content: 'Should not work',
+          categoryId: categoryId,
+        })
+        .expect(403);
+    });
+
     it('GET /posts - should return paginated posts', async () => {
       // Create a few posts
       const { authorizationHeader } =
@@ -105,6 +148,13 @@ describe('PostsModule (e2e)', () => {
       const body = response.body as { data: any[]; meta: { total: number } };
       expect(body.data).toBeInstanceOf(Array);
       expect(body.meta.total).toBeGreaterThanOrEqual(1);
+    });
+
+    it('GET /posts - should return 400 if pagination is invalid', async () => {
+      await request(app.getHttpServer())
+        .get('/posts')
+        .query({ page: 0 })
+        .expect(400);
     });
   });
 
@@ -135,6 +185,15 @@ describe('PostsModule (e2e)', () => {
       expect(body.title).toBe('Post to Update');
     });
 
+    it('GET /posts/:id - should return 404 for non-existent post', async () => {
+      const fakeId = '00000000-0000-0000-0000-000000000000';
+      await request(app.getHttpServer()).get(`/posts/${fakeId}`).expect(404);
+    });
+
+    it('GET /posts/:id - should return 400 for invalid UUID', async () => {
+      await request(app.getHttpServer()).get('/posts/not-a-uuid').expect(400);
+    });
+
     it('PUT /posts/:id - should update post', async () => {
       const updateDto = { title: 'Updated Title', content: 'Updated Content' };
 
@@ -154,6 +213,34 @@ describe('PostsModule (e2e)', () => {
       expect(persisted.title).toBe(updateDto.title);
     });
 
+    it('PUT /posts/:id - should return 404 when updating non-existent post', async () => {
+      const fakeId = '00000000-0000-0000-0000-000000000000';
+      await request(app.getHttpServer())
+        .put(`/posts/${fakeId}`)
+        .set(authHeader)
+        .send({ title: 'New Title' })
+        .expect(404);
+    });
+
+    it('PUT /posts/:id - should return 401 if unauthenticated', async () => {
+      await request(app.getHttpServer())
+        .put(`/posts/${postId}`)
+        .send({ title: 'New Title' })
+        .expect(401);
+    });
+
+    it('PUT /posts/:id - should return 403 if user is not the owner', async () => {
+      // Create another professor user
+      const { authorizationHeader: otherUserHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
+
+      await request(app.getHttpServer())
+        .put(`/posts/${postId}`)
+        .set(otherUserHeader)
+        .send({ title: 'Hacked Title' })
+        .expect(403);
+    });
+
     it('DELETE /posts/:id - should delete post', async () => {
       await request(app.getHttpServer())
         .delete(`/posts/${postId}`)
@@ -162,6 +249,29 @@ describe('PostsModule (e2e)', () => {
 
       // Verify Gone
       await request(app.getHttpServer()).get(`/posts/${postId}`).expect(404);
+    });
+
+    it('DELETE /posts/:id - should return 404 when deleting non-existent post', async () => {
+      const fakeId = '00000000-0000-0000-0000-000000000000';
+      await request(app.getHttpServer())
+        .delete(`/posts/${fakeId}`)
+        .set(authHeader)
+        .expect(404);
+    });
+
+    it('DELETE /posts/:id - should return 401 if unauthenticated', async () => {
+      await request(app.getHttpServer()).delete(`/posts/${postId}`).expect(401);
+    });
+
+    it('DELETE /posts/:id - should return 403 if user is not the owner', async () => {
+      // Create another professor user
+      const { authorizationHeader: otherUserHeader } =
+        await TestAuthHelper.createAuthenticatedUser(db, 'PROFESSOR');
+
+      await request(app.getHttpServer())
+        .delete(`/posts/${postId}`)
+        .set(otherUserHeader)
+        .expect(403);
     });
   });
 
@@ -187,6 +297,13 @@ describe('PostsModule (e2e)', () => {
       expect(body.data).toBeInstanceOf(Array);
       expect(body.data.length).toBeGreaterThanOrEqual(1);
       expect(body.data[0].title).toBe('UniqueSearchTerm');
+    });
+
+    it('should return 400 if search term is too short', async () => {
+      await request(app.getHttpServer())
+        .get('/posts/search')
+        .query({ q: 'ab' })
+        .expect(400);
     });
   });
 });

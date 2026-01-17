@@ -13,7 +13,10 @@ export default async () => {
     try {
       await postgresContainer.stop();
     } catch (error) {
-      console.error('Error while stopping PostgreSQL test container during global teardown:', error);
+      console.error(
+        'Error while stopping PostgreSQL test container during global teardown:',
+        error,
+      );
     }
   }
 
@@ -21,7 +24,10 @@ export default async () => {
     try {
       await redisContainer.stop();
     } catch (error) {
-      console.error('Error while stopping Redis test container during global teardown:', error);
+      console.error(
+        'Error while stopping Redis test container during global teardown:',
+        error,
+      );
     }
   }
 

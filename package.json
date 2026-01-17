@@ -18,6 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --detectOpenHandles --forceExit --coverage --config ./test/jest-e2e.json",
+    "test:cov:merge": "lcov-result-merger 'coverage/*/lcov.info' coverage/lcov.info",
     "seed": "ts-node -r tsconfig-paths/register scripts/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -77,6 +78,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "jest": "^30.0.0",
+    "lcov-result-merger": "^5.0.1",
     "lint-staged": "^16.2.7",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
@@ -110,7 +112,7 @@
       "!**/*.spec.ts",
       "!main.ts"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "../coverage/unit",
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@modules/(.*)$": "<rootDir>/modules/$1",

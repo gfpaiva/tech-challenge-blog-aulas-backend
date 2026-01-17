@@ -73,5 +73,25 @@ describe('AuthModule (e2e)', () => {
         })
         .expect(401);
     });
+
+    it('should return 400 with invalid email format', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'not-an-email',
+          password: 'password123',
+        })
+        .expect(400);
+    });
+
+    it('should return 400 with password too short', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: '123',
+        })
+        .expect(400);
+    });
   });
 });
