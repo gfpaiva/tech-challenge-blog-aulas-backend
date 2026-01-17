@@ -6,8 +6,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { DomainError } from '../exceptions/domain.error';
-import { EntityNotFoundError } from '../exceptions/entity-not-found.error';
+import { DomainError } from '@common/exceptions/domain.error';
+import { EntityNotFoundError } from '@common/exceptions/entity-not-found.error';
+import { InvalidCredentialsError } from '@modules/auth/core/exceptions/invalid-credentials.error';
+import { ForbiddenActionException } from '@modules/posts/core/exceptions/forbidden-action.exception';
 
 @Catch(DomainError)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -15,7 +17,13 @@ export class DomainExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (exception instanceof EntityNotFoundError) {
+    const errorName = exception.constructor?.name;
+
+    // EntityNotFoundError -> 404
+    if (
+      exception instanceof EntityNotFoundError ||
+      errorName === 'EntityNotFoundError'
+    ) {
       const nestException = new NotFoundException(exception.message);
       const status = nestException.getStatus();
 
@@ -23,7 +31,11 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (exception.constructor.name === 'InvalidCredentialsError') {
+    // InvalidCredentialsError -> 401
+    if (
+      exception instanceof InvalidCredentialsError ||
+      errorName === 'InvalidCredentialsError'
+    ) {
       response.status(HttpStatus.UNAUTHORIZED).json({
         statusCode: HttpStatus.UNAUTHORIZED,
         message: exception.message,
@@ -32,7 +44,11 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (exception.constructor.name === 'ForbiddenActionException') {
+    // ForbiddenActionException -> 403
+    if (
+      exception instanceof ForbiddenActionException ||
+      errorName === 'ForbiddenActionException'
+    ) {
       response.status(HttpStatus.FORBIDDEN).json({
         statusCode: HttpStatus.FORBIDDEN,
         message: exception.message,
@@ -41,12 +57,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    // Default handling for other DomainErrors (fallback to 500 or specific mapping if needed)
-    // For now, let's treat unknown domain errors as internal server errors or just BadRequest if they imply validation failure (though validation usually goes via class-validator)
-    // Adjusting to generic 500 for unhandled domain errors for safety, or rethrow.
-    // But usually DomainErrors are "Bad Request" (400) or "Unprocessable Entity" (422) if not Not Found.
-    // Let's default to 400 Bad Request for generic DomainErrors for now, assuming they are business rule violations.
-
+    // Default DomainError -> 400
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
       message: exception.message,
