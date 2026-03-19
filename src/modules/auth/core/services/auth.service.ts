@@ -45,6 +45,12 @@ export class AuthService {
     this.logger.log(`User logged in successfully: ${user.id}`, 'AuthService');
 
     return {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       access_token: this.jwtService.sign(payload),
     };
   }
