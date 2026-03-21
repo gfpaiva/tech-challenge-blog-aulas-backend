@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.4.0...v1.5.0) (2026-03-21)
+
+
+### Features
+
+* add in memory cache ([#20](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/20)) ([14b199d](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/14b199df279c1d94565bb9f382df4cb619f7e8f1))
+* add user to auth response ([#19](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/19)) ([e421ba9](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/e421ba91e29aaced3e0b444e5df1c7feecd102b8))
+
 ## [1.4.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.3.0...v1.4.0) (2026-01-16)
 
 
