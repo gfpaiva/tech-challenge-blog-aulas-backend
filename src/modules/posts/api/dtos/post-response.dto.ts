@@ -20,11 +20,18 @@ export class PostDto {
   creationDate: Date;
   updateDate: Date;
 
+  private static readonly CONTENT_PREVIEW_LENGTH = 100;
+
   static fromDomain(post: Post): PostDto {
+    const content =
+      post.content.length > PostDto.CONTENT_PREVIEW_LENGTH
+        ? `${post.content.substring(0, PostDto.CONTENT_PREVIEW_LENGTH)}...`
+        : post.content;
+
     return {
       id: post.id,
       title: post.title,
-      content: post.content,
+      content,
       author: post.author,
       category: post.category,
       creationDate: post.creationDate,
