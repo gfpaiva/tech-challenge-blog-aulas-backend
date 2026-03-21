@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.6.0...v1.7.0) (2026-03-21)
+
+
+### Features
+
+* short content on post response dto ([#25](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/25)) ([4968cb1](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/4968cb1a8ca0edc2be2ccc4bdcb2fa68dc43d8bd))
+
 ## [1.6.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.5.0...v1.6.0) (2026-03-21)
 
 
