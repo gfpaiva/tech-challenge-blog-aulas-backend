@@ -5,6 +5,7 @@ import { ICachePort } from '@common/ports/cache.port';
 import { PostNotFoundError } from '../exceptions/post-not-found.error';
 import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 import { Post } from '../entities/post.entity';
+import { IDeployTriggerPort } from '@common/ports/deploy-trigger.port';
 
 describe('DeletePostService', () => {
   let service: DeletePostService;
@@ -19,6 +20,10 @@ describe('DeletePostService', () => {
   const mockCacheService = {
     del: jest.fn(),
     delMatch: jest.fn(),
+  };
+
+  const mockDeployTrigger = {
+    trigger: jest.fn().mockResolvedValue(undefined),
   };
 
   const mockPost: Post = {
@@ -37,6 +42,7 @@ describe('DeletePostService', () => {
         DeletePostService,
         { provide: IPostRepository, useValue: mockPostRepository },
         { provide: ICachePort, useValue: mockCacheService },
+        { provide: IDeployTriggerPort, useValue: mockDeployTrigger },
       ],
     }).compile();
 
@@ -61,6 +67,7 @@ describe('DeletePostService', () => {
     expect(postRepository.delete).toHaveBeenCalledWith('post-id');
     expect(cache.del).toHaveBeenCalledWith('post:detail:post-id');
     expect(cache.delMatch).toHaveBeenCalledWith('posts:list:*');
+    expect(mockDeployTrigger.trigger).toHaveBeenCalled();
   });
 
   it('should throw PostNotFoundError if post does not exist', async () => {
