@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.5.0...v1.6.0) (2026-03-21)
+
+
+### Features
+
+* add trigger adapter to front-end deploy ([#23](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/23)) ([39aa6c2](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/39aa6c21f364c0c7cbfc317fd78323232b92228b))
+
 ## [1.5.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.4.0...v1.5.0) (2026-03-21)
 
 
