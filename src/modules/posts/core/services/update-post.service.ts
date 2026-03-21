@@ -10,6 +10,7 @@ import {
 } from '../ports/category.repository.port';
 import { ICachePort } from '@common/ports/cache.port';
 import { ILoggerPort } from '@common/ports/logger.port';
+import { IDeployTriggerPort } from '@common/ports/deploy-trigger.port';
 
 export interface UpdatePostCommand {
   id: string;
@@ -29,6 +30,8 @@ export class UpdatePostService {
     @Inject(ICachePort)
     private readonly cache: ICachePort,
     private readonly logger: ILoggerPort,
+    @Inject(IDeployTriggerPort)
+    private readonly deployTrigger: IDeployTriggerPort,
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<Post> {
@@ -62,10 +65,12 @@ export class UpdatePostService {
       updateDate: new Date(),
     });
 
-    await Promise.all([
+    void Promise.all([
       this.cache.del(`post:detail:${id}`),
       this.cache.delMatch('posts:list:*'),
     ]);
+
+    void this.deployTrigger.trigger();
 
     return updatedPost;
   }

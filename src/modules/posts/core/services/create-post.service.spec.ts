@@ -8,6 +8,7 @@ import { CategoryNotFoundError } from '../exceptions/category-not-found.error';
 import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 import { UserRole } from '@common/types';
 import { ILoggerPort } from '@common/ports/logger.port';
+import { IDeployTriggerPort } from '@common/ports/deploy-trigger.port';
 
 describe('CreatePostService', () => {
   let service: CreatePostService;
@@ -57,6 +58,10 @@ describe('CreatePostService', () => {
             error: jest.fn(),
             debug: jest.fn(),
           },
+        },
+        {
+          provide: IDeployTriggerPort,
+          useValue: { trigger: jest.fn().mockResolvedValue(undefined) },
         },
       ],
     }).compile();

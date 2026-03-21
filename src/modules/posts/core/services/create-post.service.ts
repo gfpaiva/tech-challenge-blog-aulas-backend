@@ -5,6 +5,7 @@ import { ICategoryRepository } from '../ports/category.repository.port';
 import { Post } from '../entities/post.entity';
 import { ICachePort } from '@common/ports/cache.port';
 import { ILoggerPort } from '@common/ports/logger.port';
+import { IDeployTriggerPort } from '@common/ports/deploy-trigger.port';
 import { UserRole } from '@common/types';
 import { ForbiddenActionException } from '../exceptions/forbidden-action.exception';
 
@@ -26,6 +27,8 @@ export class CreatePostService {
     @Inject(ICachePort)
     private readonly cache: ICachePort,
     private readonly logger: ILoggerPort,
+    @Inject(IDeployTriggerPort)
+    private readonly deployTrigger: IDeployTriggerPort,
   ) {}
 
   async execute(command: CreatePostCommand): Promise<Post> {
@@ -55,7 +58,9 @@ export class CreatePostService {
 
     const createdPost = await this.postRepository.create(newPost);
 
-    await this.cache.delMatch('posts:list:*');
+    void this.cache.delMatch('posts:list:*');
+
+    void this.deployTrigger.trigger();
 
     this.logger.log(`Post created: ${createdPost.id}`, 'CreatePostService', {
       authorId: command.authorId,

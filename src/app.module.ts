@@ -12,6 +12,7 @@ import { ClsModule } from 'nestjs-cls';
 import { RequestIdMiddleware } from '@common/middlewares/request-id.middleware';
 import { LoggerModule } from '@infra/logger/logger.module';
 import { HttpLoggerInterceptor } from '@common/interceptors/http-logger.interceptor';
+import { DeployModule } from '@infra/deploy/deploy.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { HttpLoggerInterceptor } from '@common/interceptors/http-logger.intercep
     LoggerModule,
     DatabaseModule,
     CacheModule,
+    DeployModule,
     AuthModule,
     PostsModule,
     UsersModule,
