@@ -2,7 +2,8 @@ import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { ICachePort } from '@common/ports/cache.port';
-import { RedisCacheAdapter } from './redis-cache.adapter';
+// RedisCacheAdapter is kept in the project but not wired — swap useClass below to re-enable Redis
+import { InMemoryCacheAdapter } from './in-memory-cache.adapter';
 import { CACHE_CLIENT } from './cache.constants';
 
 @Global()
@@ -28,7 +29,7 @@ import { CACHE_CLIENT } from './cache.constants';
     },
     {
       provide: ICachePort,
-      useClass: RedisCacheAdapter,
+      useClass: InMemoryCacheAdapter,
     },
   ],
   exports: [CACHE_CLIENT, ICachePort],
