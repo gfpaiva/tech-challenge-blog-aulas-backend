@@ -1,0 +1,46 @@
+meta {
+  name: List Teachers
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{host}}/users/teachers
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:query {
+  ~page: 1
+  ~limit: 10
+}
+
+script:post-response {
+  const data = res.getBody();
+  if (data && data.data && data.data.length > 0) {
+    bru.setVar("lastTeacherId", data.data[0].id);
+  }
+}
+
+docs {
+  # Listar Professores
+  Retorna uma lista paginada de todos os usuários com role `PROFESSOR`.
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>` de um usuário com role **PROFESSOR**.
+
+  ### Parâmetros de Query
+  | Parâmetro | Tipo    | Padrão | Descrição                        |
+  |-----------|---------|--------|----------------------------------|
+  | `page`    | integer | 1      | Número da página (mínimo: 1)     |
+  | `limit`   | integer | 10     | Itens por página (máximo: 100)   |
+
+  ### Respostas
+  - `200 OK` — lista paginada com `data`, `total`, `page` e `limit`
+  - `401 Unauthorized` — token ausente ou inválido
+  - `403 Forbidden` — usuário autenticado não é PROFESSOR
+}

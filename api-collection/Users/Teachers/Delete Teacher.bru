@@ -1,0 +1,45 @@
+meta {
+  name: Delete Teacher
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{host}}/users/teachers/{{teacherId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  teacherId: {{lastTeacherId}}
+}
+
+script:post-response {
+  if (res.getStatus() === 204) {
+    bru.setVar("lastTeacherId", "");
+  }
+}
+
+docs {
+  # Excluir Professor
+  Remove permanentemente um professor do sistema (Hard Delete).
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>` de um usuário com role **PROFESSOR**.
+
+  ### Parâmetros de Path
+  | Parâmetro | Tipo | Obrigatório | Descrição          |
+  |-----------|------|-------------|--------------------|
+  | `id`      | UUID | ✅          | UUID do professor  |
+
+  ### Respostas
+  - `204 No Content` — professor excluído com sucesso
+  - `400 Bad Request` — `id` não é um UUID válido
+  - `401 Unauthorized` — token ausente ou inválido
+  - `403 Forbidden` — usuário autenticado não é PROFESSOR
+  - `404 Not Found` — professor não encontrado
+}

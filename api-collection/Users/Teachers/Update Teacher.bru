@@ -1,0 +1,61 @@
+meta {
+  name: Update Teacher
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{host}}/users/teachers/{{teacherId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  teacherId: {{lastTeacherId}}
+}
+
+body:json {
+  {
+    "name": "Maria Oliveira Atualizada",
+    "email": "maria.atualizada@escola.com"
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+    const data = res.getBody();
+    if (data && data.id) {
+      bru.setVar("lastTeacherId", data.id);
+    }
+  }
+}
+
+docs {
+  # Editar Professor
+  Atualiza os dados de um professor. Apenas `name` e `email` podem ser alterados (senha é imutável via este endpoint).
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>` de um usuário com role **PROFESSOR**.
+
+  ### Parâmetros de Path
+  | Parâmetro | Tipo | Obrigatório | Descrição          |
+  |-----------|------|-------------|--------------------|
+  | `id`      | UUID | ✅          | UUID do professor  |
+
+  ### Body (todos os campos são opcionais)
+  | Campo   | Tipo   | Descrição                          |
+  |---------|--------|------------------------------------|
+  | `name`  | string | Novo nome do professor             |
+  | `email` | string | Novo e-mail (deve ser único)       |
+
+  ### Respostas
+  - `200 OK` — dados atualizados do professor
+  - `400 Bad Request` — dados inválidos ou e-mail já em uso
+  - `401 Unauthorized` — token ausente ou inválido
+  - `403 Forbidden` — usuário autenticado não é PROFESSOR
+  - `404 Not Found` — professor não encontrado
+}

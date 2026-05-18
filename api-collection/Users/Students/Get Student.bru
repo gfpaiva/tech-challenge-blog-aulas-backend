@@ -1,0 +1,39 @@
+meta {
+  name: Get Student
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{host}}/users/students/{{studentId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  studentId: {{lastStudentId}}
+}
+
+docs {
+  # Detalhe do Aluno
+  Retorna os dados de um aluno específico pelo seu UUID.
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>` de um usuário com role **PROFESSOR**.
+
+  ### Parâmetros de Path
+  | Parâmetro  | Tipo | Obrigatório | Descrição       |
+  |------------|------|-------------|-----------------|
+  | `id`       | UUID | ✅          | UUID do aluno   |
+
+  ### Respostas
+  - `200 OK` — dados do aluno
+  - `400 Bad Request` — `id` não é um UUID válido
+  - `401 Unauthorized` — token ausente ou inválido
+  - `403 Forbidden` — usuário autenticado não é PROFESSOR
+  - `404 Not Found` — aluno não encontrado (ou o ID pertence a um PROFESSOR)
+}
