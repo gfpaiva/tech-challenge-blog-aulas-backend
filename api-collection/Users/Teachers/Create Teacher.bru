@@ -1,0 +1,54 @@
+meta {
+  name: Create Teacher
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/users/teachers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Maria Oliveira",
+    "email": "maria.oliveira@escola.com",
+    "password": "123456"
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 201) {
+    const data = res.getBody();
+    if (data && data.id) {
+      bru.setVar("lastTeacherId", data.id);
+    }
+  }
+}
+
+docs {
+  # Cadastrar Professor
+  Cria um novo usuário com a role `PROFESSOR`.
+
+  ### Autenticação
+  Requer Header `Authorization: Bearer <token>` de um usuário com role **PROFESSOR**.
+  > **Dica:** Execute o request `Auth/Login` para obter e configurar automaticamente o token.
+
+  ### Body
+  | Campo      | Tipo   | Obrigatório | Descrição                    |
+  |------------|--------|-------------|------------------------------|
+  | `name`     | string | ✅          | Nome completo do professor    |
+  | `email`    | string | ✅          | E-mail único (formato válido) |
+  | `password` | string | ✅          | Senha mínima de 6 caracteres  |
+
+  ### Respostas
+  - `201 Created` — professor criado com sucesso
+  - `400 Bad Request` — dados inválidos ou e-mail já cadastrado
+  - `401 Unauthorized` — token ausente ou inválido
+  - `403 Forbidden` — usuário autenticado não é PROFESSOR
+}
