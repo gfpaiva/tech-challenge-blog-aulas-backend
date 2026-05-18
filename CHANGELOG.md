@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.7.0...v1.8.0) (2026-05-18)
+
+
+### Features
+
+* add users crud ([#27](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/issues/27)) ([18c550c](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/commit/18c550c666cdf68b3f53c0b82ce640ed7b26bd84))
+
 ## [1.7.0](https://github.com/gfpaiva/tech-challenge-blog-aulas-backend/compare/v1.6.0...v1.7.0) (2026-03-21)
 
 
